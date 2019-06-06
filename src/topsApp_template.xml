@@ -1,0 +1,12 @@
+<topsApp>
+    <component name="topsinsar">
+        <component name="master">
+            <property name="output directory">master</property>
+            <property name="safe">{{ reference_granule }}.SAFE</property>
+        </component>
+        <component name="slave">
+            <property name="output directory">slave</property>
+            <property name="safe">{{ secondary_granule }}.SAFE</property>
+        </component>
+  </component>
+</topsApp>
