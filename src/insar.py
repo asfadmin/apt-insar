@@ -1,4 +1,5 @@
 import os
+import subprocess
 from argparse import ArgumentParser
 from zipfile import ZipFile
 
@@ -13,6 +14,13 @@ COLLECTION_IDS = [
     "C1327985661-ASF",  # SENTINEL-1B_SLC
 ]
 USER_AGENT = "python3 asfdaac/apt-insar"
+
+
+def system_call(params):
+    print(" ".join(params))
+    return_code = subprocess.call(params)
+    if return_code:
+        exit(return_code)
 
 
 def get_xml_template():
@@ -98,3 +106,17 @@ if __name__ == "__main__":
     os.unlink(secondary_file)
 
     write_topsApp_xml(args.reference_granule, args.secondary_granule)
+
+    system_call(['topsApp.py'])
+
+    system_call(['gdal_translate', '-of', 'GTiff', '-a_nodata', '0', 'merged/phsig.cor.geo', 'tmp.tif'])
+    system_call(['gdaladdo', '-r', 'average', 'tmp.tif', '2', '4', '6', '8'])
+    system_call(['gdal_translate', '-co', 'TILED=YES', '-co', 'COPY_SRC_OVERVIEWS=YES', '-co', 'COMPRESS=DEFLATE', 'tmp.tif', '/output/coherence.tif'])
+
+    system_call(['gdal_translate', '-of', 'GTiff', '-a_nodata', '0', '-b', '1', 'merged/filt_topophase.unw.geo', 'tmp.tif'])
+    system_call(['gdaladdo', '-r', 'average', 'tmp.tif', '2', '4', '6', '8'])
+    system_call(['gdal_translate', '-co', 'TILED=YES', '-co', 'COPY_SRC_OVERVIEWS=YES', '-co', 'COMPRESS=DEFLATE', 'tmp.tif', '/output/amplitude.tif'])
+
+    system_call(['gdal_translate', '-of', 'GTiff', '-a_nodata', '0', '-b', '2', 'merged/filt_topophase.unw.geo', 'tmp.tif'])
+    system_call(['gdaladdo', '-r', 'average', 'tmp.tif', '2', '4', '6', '8'])
+    system_call(['gdal_translate', '-co', 'TILED=YES', '-co', 'COPY_SRC_OVERVIEWS=YES', '-co', 'COMPRESS=DEFLATE', 'tmp.tif', '/output/unwrapped_phase.tif'])
