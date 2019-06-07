@@ -9,6 +9,7 @@ from jinja2 import Template
 
 CHUNK_SIZE = 5242880
 CMR_URL = "https://cmr.earthdata.nasa.gov/search/granules.json"
+QC_URL = "https://qc.sentinel1.eo.esa.int/api/v1/"
 COLLECTION_IDS = [
     "C1214470488-ASF",  # SENTINEL-1A_SLC
     "C1327985661-ASF",  # SENTINEL-1B_SLC
@@ -30,10 +31,12 @@ def get_xml_template():
     return template
 
 
-def write_topsApp_xml(reference_granule, secondary_granule):
+def write_topsApp_xml(reference_granule, secondary_granule, reference_orbit_file, secondary_orbit_file):
     data = {
         'reference_granule': reference_granule,
         'secondary_granule': secondary_granule,
+        "reference_orbit_file": reference_orbit_file,
+        "secondary_orbit_file": secondary_orbit_file,
     }
     template = get_xml_template()
     rendered = template.render(data)
@@ -42,7 +45,7 @@ def write_topsApp_xml(reference_granule, secondary_granule):
 
 
 def download_file(url):
-    print(f"\nDownloading granule from {url}")
+    print(f"\nDownloading {url}")
     local_filename = url.split("/")[-1]
     headers = {"User-Agent": USER_AGENT}
     with requests.get(url, headers=headers, stream=True) as r:
@@ -61,8 +64,6 @@ def write_netrc_file(username, password):
 
 
 def get_download_url(granule):
-    print("\nFetching granule information")
-
     params = {
         "readable_granule_name": granule,
         "provider": "ASF",
@@ -83,6 +84,37 @@ def get_download_url(granule):
     return None
 
 
+def get_orbit_url(granule, orbit_type):
+    platform = granule[0:3]
+    date_time = f"{granule[17:21]}-{granule[21:23]}-{granule[23:25]}T{granule[26:28]}:{granule[28:30]}:{granule[30:32]}"
+
+    params = {
+        "product_type": orbit_type,
+        "product_name__startswith": platform,
+        "validity_start__lt": date_time,
+        "validity_stop__gt": date_time,
+        "ordering": "-creation_date",
+        "page_size": "1",
+    }
+
+    response = requests.get(url=QC_URL, params=params)
+    response.raise_for_status()
+    qc_data = response.json()
+
+    orbit_url = None
+    if qc_data["results"]:
+        orbit_url = qc_data["results"][0]["remote_url"]
+    return orbit_url
+
+
+def get_orbit_file(granule):
+    orbit_url = get_orbit_url(granule, "AUX_POEORB")
+    if not orbit_url:
+        orbit_url = get_orbit_url(granule, "AUX_RESORB")
+    orbit_file = download_file(orbit_url)
+    return orbit_file
+
+
 if __name__ == "__main__":
     parser = ArgumentParser(description="Sentinel-1 InSAR using ISCE")
     parser.add_argument("--reference-granule", "-r", type=str, help="Reference granule name.", required=True)
@@ -98,14 +130,16 @@ if __name__ == "__main__":
     with ZipFile(reference_file, 'r') as zip_handle:
         zip_handle.extractall()
     os.unlink(reference_file)
+    reference_orbit_file = get_orbit_file(args.reference_granule)
 
     secondary_url = get_download_url(args.secondary_granule)
     secondary_file = download_file(secondary_url)
     with ZipFile(secondary_file, 'r') as zip_handle:
         zip_handle.extractall()
     os.unlink(secondary_file)
+    secondary_orbit_file = get_orbit_file(args.secondary_granule)
 
-    write_topsApp_xml(args.reference_granule, args.secondary_granule)
+    write_topsApp_xml(args.reference_granule, args.secondary_granule, reference_orbit_file, secondary_orbit_file)
 
     system_call(['topsApp.py'])
 
