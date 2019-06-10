@@ -159,6 +159,6 @@ if __name__ == "__main__":
 
     run_topsApp(reference_granule, secondary_granule)
 
-    create_geotiff("merged/phsig.cor.geo", "output/coherence.tif")
-    create_geotiff("merged/filt_topophase.unw.geo", "output/amplitude.tif", band=1)
-    create_geotiff("merged/filt_topophase.unw.geo", "output/unwrapped_phase.tif", band=2)
+    create_geotiff("merged/phsig.cor.geo", "/output/coherence.tif")
+    create_geotiff("merged/filt_topophase.unw.geo", "/output/amplitude.tif", band=1)
+    create_geotiff("merged/filt_topophase.unw.geo", "/output/unwrapped_phase.tif", band=2)
