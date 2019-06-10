@@ -4,12 +4,12 @@
         <property name="unwrapper name">snaphu_mcf</property>
         <component name="master">
             <property name="output directory">master</property>
-            <property name="safe">{{ reference_granule }}.SAFE</property>
+            <property name="safe">{{ reference_granule_dir }}</property>
             <property name="orbit file">{{ reference_orbit_file }}</property>
         </component>
         <component name="slave">
             <property name="output directory">slave</property>
-            <property name="safe">{{ secondary_granule }}.SAFE</property>
+            <property name="safe">{{ secondary_granule_dir }}</property>
             <property name="orbit file">{{ secondary_orbit_file }}</property>
         </component>
   </component>
