@@ -31,15 +31,9 @@ def get_xml_template():
     return template
 
 
-def write_topsApp_xml(reference_granule_dir, secondary_granule_dir, reference_orbit_file, secondary_orbit_file):
-    data = {
-        "reference_granule_dir": reference_granule_dir,
-        "secondary_granule_dir": secondary_granule_dir,
-        "reference_orbit_file": reference_orbit_file,
-        "secondary_orbit_file": secondary_orbit_file,
-    }
+def write_topsApp_xml(reference_granule, secondary_granule):
     template = get_xml_template()
-    rendered = template.render(data)
+    rendered = template.render(reference_granule=reference_granule, secondary_granule=secondary_granule)
     with open("topsApp.xml", "w") as f:
         f.write(rendered)
 
@@ -124,10 +118,17 @@ def unzip(zip_file):
 
 def get_granule(granule):
     print(f"\nPreparing {granule}")
+
     granule_url = get_download_url(granule)
     granule_zip = download_file(granule_url)
     unzip(granule_zip)
-    return f"{granule}.SAFE"
+
+    orbit_file = get_orbit_file(granule)
+
+    return {
+        "directory": f"{granule}.SAFE",
+        "orbit_file": orbit_file,
+    }
 
 
 def create_geotiff(input_file, output_file, input_band=1):
@@ -136,6 +137,11 @@ def create_geotiff(input_file, output_file, input_band=1):
     system_call(["gdaladdo", "-r", "average", temp_file, "2", "4", "6", "8"])
     system_call(["gdal_translate", "-co", "TILED=YES", "-co", "COPY_SRC_OVERVIEWS=YES", "-co", "COMPRESS=DEFLATE", temp_file, output_file])
     os.unlink(temp_file)
+
+
+def run_topsApp(reference_granule, secondary_granule):
+    write_topsApp_xml(reference_granule, secondary_granule)
+    system_call(["topsApp.py"])
 
 
 if __name__ == "__main__":
@@ -148,15 +154,10 @@ if __name__ == "__main__":
 
     write_netrc_file(args.username, args.password)
 
-    reference_granule_dir = get_granule(args.reference_granule)
-    reference_orbit_file = get_orbit_file(args.reference_granule)
+    reference_granule = get_granule(args.reference_granule)
+    secondary_granule = get_granule(args.secondary_granule)
 
-    secondary_granule_dir = get_granule(args.secondary_granule)
-    secondary_orbit_file = get_orbit_file(args.secondary_granule)
-
-    write_topsApp_xml(reference_granule_dir, secondary_granule_dir, reference_orbit_file, secondary_orbit_file)
-
-    system_call(["topsApp.py"])
+    run_topsApp(reference_granule, secondary_granule)
 
     create_geotiff("merged/phsig.cor.geo", "output/coherence.tif")
     create_geotiff("merged/filt_topophase.unw.geo", "output/amplitude.tif", band=1)
