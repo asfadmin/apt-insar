@@ -144,7 +144,7 @@ def run_topsApp(reference_granule, secondary_granule):
     system_call(["topsApp.py"])
 
 
-def generate__output_files(start_date, end_date, input_folder="merged", output_folder="/output"):
+def generate_output_files(start_date, end_date, input_folder="merged", output_folder="/output"):
     name = f"S1-INSAR-{start_date}-{end_date}"
     create_geotiff(f"{input_folder}/phsig.cor.geo", f"{output_folder}/{name}-COR.tif")
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-AMP.tif", input_band=1)
