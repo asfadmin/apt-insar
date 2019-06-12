@@ -1,16 +1,16 @@
 <topsApp>
-    <component name="topsinsar">
-        <property name="do unwrap">True</property>
-        <property name="unwrapper name">snaphu_mcf</property>
-        <component name="master">
-            <property name="output directory">master</property>
-            <property name="safe">{{ reference_granule.directory }}</property>
-            <property name="orbit file">{{ reference_granule.orbit_file }}</property>
-        </component>
-        <component name="slave">
-            <property name="output directory">slave</property>
-            <property name="safe">{{ secondary_granule.directory }}</property>
-            <property name="orbit file">{{ secondary_granule.orbit_file }}</property>
-        </component>
+  <component name="topsinsar">
+    <property name="do unwrap">True</property>
+    <property name="unwrapper name">snaphu_mcf</property>
+    <component name="master">
+      <property name="output directory">master</property>
+      <property name="safe">{{ reference_granule.directory }}</property>
+      <property name="orbit file">{{ reference_granule.orbit_file }}</property>
+    </component>
+    <component name="slave">
+      <property name="output directory">slave</property>
+      <property name="safe">{{ secondary_granule.directory }}</property>
+      <property name="orbit file">{{ secondary_granule.orbit_file }}</property>
+    </component>
   </component>
 </topsApp>
