@@ -144,6 +144,13 @@ def run_topsApp(reference_granule, secondary_granule):
     system_call(["topsApp.py"])
 
 
+def generate__output_files(start_date, end_date, input_folder="merged", output_folder="/output"):
+    name = f"S1-INSAR-{start_date}-{end_date}"
+    create_geotiff(f"{input_folder}/phsig.cor.geo", f"{output_folder}/{name}-COR.tif")
+    create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-AMP.tif", input_band=1)
+    create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-UNW.tif", input_band=2)
+
+
 if __name__ == "__main__":
     parser = ArgumentParser(description="Sentinel-1 InSAR using ISCE")
     parser.add_argument("--reference-granule", "-r", type=str, help="Reference granule name.", required=True)
@@ -159,6 +166,4 @@ if __name__ == "__main__":
 
     run_topsApp(reference_granule, secondary_granule)
 
-    create_geotiff("merged/phsig.cor.geo", "/output/coherence.tif")
-    create_geotiff("merged/filt_topophase.unw.geo", "/output/amplitude.tif", input_band=1)
-    create_geotiff("merged/filt_topophase.unw.geo", "/output/unwrapped_phase.tif", input_band=2)
+    generate_output_files(args.reference_granule[17:25], args.secondary_granule[17:25])
