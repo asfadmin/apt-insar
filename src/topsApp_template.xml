@@ -2,6 +2,7 @@
   <component name="topsinsar">
     <property name="do unwrap">True</property>
     <property name="unwrapper name">snaphu_mcf</property>
+    <property name="geocode list">['merged/phsig.cor', 'merged/filt_topophase.unw']</property>
     <component name="master">
       <property name="output directory">master</property>
       <property name="safe">{{ reference_granule.directory }}</property>
