@@ -141,7 +141,7 @@ def get_granule(granule):
     return {
         "directory": f"{granule}.SAFE",
         "orbit_file": orbit_file,
-        "aquisition_date": "hold"
+        "aquisition_date": granule[17:25]
     }
 
 
@@ -163,7 +163,7 @@ def get_args():
 
 if __name__ == "__main__":
 
-    args = get_args
+    args = get_args()
 
     write_netrc_file(args.username, args.password)
 
@@ -172,4 +172,4 @@ if __name__ == "__main__":
 
     run_topsApp(reference_granule, secondary_granule)
 
-    generate_output_files(args.reference_granule[17:25], args.secondary_granule[17:25])
+    generate_output_files(reference_granule["aquisition_date"], secondary_granule["aquisition_date"])
