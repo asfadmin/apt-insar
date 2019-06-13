@@ -17,6 +17,21 @@ COLLECTION_IDS = [
 USER_AGENT = "python3 asfdaac/apt-insar"
 
 
+def create_geotiff(input_file, output_file, input_band=1):
+    temp_file = "tmp.tif"
+    system_call(["gdal_translate", "-of", "GTiff", "-a_nodata", "0", "-b", str(input_band), input_file, temp_file])
+    system_call(["gdaladdo", "-r", "average", temp_file, "2", "4", "6", "8"])
+    system_call(["gdal_translate", "-co", "TILED=YES", "-co", "COPY_SRC_OVERVIEWS=YES", "-co", "COMPRESS=DEFLATE", temp_file, output_file])
+    os.unlink(temp_file)
+
+
+def generate_output_files(start_date, end_date, input_folder="merged", output_folder="/output"):
+    name = f"S1-INSAR-{start_date}-{end_date}"
+    create_geotiff(f"{input_folder}/phsig.cor.geo", f"{output_folder}/{name}-COR.tif")
+    create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-AMP.tif", input_band=1)
+    create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-UNW.tif", input_band=2)
+
+
 def system_call(params):
     print(" ".join(params))
     return_code = subprocess.call(params)
@@ -38,43 +53,9 @@ def write_topsApp_xml(reference_granule, secondary_granule):
         f.write(rendered)
 
 
-def download_file(url):
-    print(f"Downloading {url}")
-    local_filename = url.split("/")[-1]
-    headers = {"User-Agent": USER_AGENT}
-    with requests.get(url, headers=headers, stream=True) as r:
-        r.raise_for_status()
-        with open(local_filename, "wb") as f:
-            for chunk in r.iter_content(chunk_size=CHUNK_SIZE):
-                if chunk:
-                    f.write(chunk)
-    return local_filename
-
-
-def write_netrc_file(username, password):
-    netrc_file = os.environ["HOME"] + "/.netrc"
-    with open(netrc_file, "w") as f:
-        f.write(f"machine urs.earthdata.nasa.gov login {username} password {password}")
-
-
-def get_download_url(granule):
-    params = {
-        "readable_granule_name": granule,
-        "provider": "ASF",
-        "collection_concept_id": COLLECTION_IDS
-    }
-    response = requests.get(url=CMR_URL, params=params)
-    response.raise_for_status()
-    cmr_data = response.json()
-
-    if not cmr_data["feed"]["entry"]:
-        return None
-
-    for product in cmr_data["feed"]["entry"][0]["links"]:
-        if "data" in product["rel"]:
-            return product["href"]
-
-    return None
+def run_topsApp(reference_granule, secondary_granule):
+    write_topsApp_xml(reference_granule, secondary_granule)
+    system_call(["topsApp.py"])
 
 
 def get_orbit_url(granule, orbit_type):
@@ -115,6 +96,39 @@ def unzip(zip_file):
     os.unlink(zip_file)
 
 
+def download_file(url):
+    print(f"Downloading {url}")
+    local_filename = url.split("/")[-1]
+    headers = {"User-Agent": USER_AGENT}
+    with requests.get(url, headers=headers, stream=True) as r:
+        r.raise_for_status()
+        with open(local_filename, "wb") as f:
+            for chunk in r.iter_content(chunk_size=CHUNK_SIZE):
+                if chunk:
+                    f.write(chunk)
+    return local_filename
+
+
+def get_download_url(granule):
+    params = {
+        "readable_granule_name": granule,
+        "provider": "ASF",
+        "collection_concept_id": COLLECTION_IDS
+    }
+    response = requests.get(url=CMR_URL, params=params)
+    response.raise_for_status()
+    cmr_data = response.json()
+
+    if not cmr_data["feed"]["entry"]:
+        return None
+
+    for product in cmr_data["feed"]["entry"][0]["links"]:
+        if "data" in product["rel"]:
+            return product["href"]
+
+    return None
+
+
 def get_granule(granule):
     print(f"\nPreparing {granule}")
 
@@ -127,36 +141,29 @@ def get_granule(granule):
     return {
         "directory": f"{granule}.SAFE",
         "orbit_file": orbit_file,
+        "aquisition_date": "hold"
     }
 
 
-def create_geotiff(input_file, output_file, input_band=1):
-    temp_file = "tmp.tif"
-    system_call(["gdal_translate", "-of", "GTiff", "-a_nodata", "0", "-b", str(input_band), input_file, temp_file])
-    system_call(["gdaladdo", "-r", "average", temp_file, "2", "4", "6", "8"])
-    system_call(["gdal_translate", "-co", "TILED=YES", "-co", "COPY_SRC_OVERVIEWS=YES", "-co", "COMPRESS=DEFLATE", temp_file, output_file])
-    os.unlink(temp_file)
+def write_netrc_file(username, password):
+    netrc_file = os.environ["HOME"] + "/.netrc"
+    with open(netrc_file, "w") as f:
+        f.write(f"machine urs.earthdata.nasa.gov login {username} password {password}")
 
 
-def run_topsApp(reference_granule, secondary_granule):
-    write_topsApp_xml(reference_granule, secondary_granule)
-    system_call(["topsApp.py"])
-
-
-def generate_output_files(start_date, end_date, input_folder="merged", output_folder="/output"):
-    name = f"S1-INSAR-{start_date}-{end_date}"
-    create_geotiff(f"{input_folder}/phsig.cor.geo", f"{output_folder}/{name}-COR.tif")
-    create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-AMP.tif", input_band=1)
-    create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-UNW.tif", input_band=2)
-
-
-if __name__ == "__main__":
+def get_args():
     parser = ArgumentParser(description="Sentinel-1 InSAR using ISCE")
     parser.add_argument("--reference-granule", "-r", type=str, help="Reference granule name.", required=True)
     parser.add_argument("--secondary-granule", "-s", type=str, help="Secondary granule name.", required=True)
     parser.add_argument("--username", "-u", type=str, help="Earthdata Login username.")
     parser.add_argument("--password", "-p", type=str, help="Earthdata Login password.")
     args = parser.parse_args()
+    return args
+
+
+if __name__ == "__main__":
+
+    args = get_args
 
     write_netrc_file(args.username, args.password)
 
