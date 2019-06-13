@@ -2,6 +2,7 @@ import os
 import subprocess
 from argparse import ArgumentParser
 from zipfile import ZipFile
+from getpass import getpass
 
 import requests
 from jinja2 import Template
@@ -158,6 +159,13 @@ def get_args():
     parser.add_argument("--username", "-u", type=str, help="Earthdata Login username.")
     parser.add_argument("--password", "-p", type=str, help="Earthdata Login password.")
     args = parser.parse_args()
+    
+    if not args.username:
+        args.username = input("\nEarthdata Login username: ")
+
+    if not args.password:
+        args.password = getpass("\nEarthdata Login password: ")
+        
     return args
 
 
