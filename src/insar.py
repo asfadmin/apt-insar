@@ -70,7 +70,6 @@ def get_download_url(granule):
     if not cmr_data["feed"]["entry"]:
         return None
 
-    entry = cmr_data["feed"]["entry"][0]
     for product in cmr_data["feed"]["entry"][0]["links"]:
         if "data" in product["rel"]:
             return product["href"]
