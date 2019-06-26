@@ -3,7 +3,6 @@ import subprocess
 from argparse import ArgumentParser
 from zipfile import ZipFile
 from getpass import getpass
-from shutil import move
 
 import requests
 from jinja2 import Template
@@ -19,10 +18,17 @@ COLLECTION_IDS = [
 USER_AGENT = "python3 asfdaac/apt-insar"
 
 
+def update_xml_with_image_type(input_file):
+    xml_file = input_file + ".xml"
+    sed_command = 's|</imageFile>|<property name="image_type"><value>unw</value><doc>Image type used for displaying.</doc></property></imageFile>|'
+    system_call(["sed", "-i", sed_command, xml_file])
+
+
 def create_browse(input_file, output_file):
-    temp_png = os.path.basename(input_file) + ".png"
+    temp_png_file = os.path.basename(input_file) + ".png"
+    update_xml_with_image_type(input_file)
     system_call(["mdx.py", input_file, "-kml", "browse.kml"])
-    move(temp_png, output_file)
+    system_call(["gdal_translate", "-of", "PNG", "-outsize", "0", "1024", temp_png_file, output_file])
 
 
 def create_geotiff(input_file, output_file, input_band=1):
