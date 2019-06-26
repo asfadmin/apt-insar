@@ -3,6 +3,7 @@ import subprocess
 from argparse import ArgumentParser
 from zipfile import ZipFile
 from getpass import getpass
+from shutil import move
 
 import requests
 from jinja2 import Template
@@ -18,6 +19,12 @@ COLLECTION_IDS = [
 USER_AGENT = "python3 asfdaac/apt-insar"
 
 
+def create_browse(input_file, output_file):
+    temp_png = os.path.basename(input_file) + ".png"
+    system_call(["mdx.py", input_file, "-kml", "browse.kml"])
+    move(temp_png, output_file)
+
+
 def create_geotiff(input_file, output_file, input_band=1):
     temp_file = "tmp.tif"
     system_call(["gdal_translate", "-of", "GTiff", "-a_nodata", "0", "-b", str(input_band), input_file, temp_file])
@@ -31,6 +38,7 @@ def generate_output_files(start_date, end_date, input_folder="merged", output_fo
     create_geotiff(f"{input_folder}/phsig.cor.geo", f"{output_folder}/{name}-COR.tif")
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-AMP.tif", input_band=1)
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-UNW.tif", input_band=2)
+    create_browse(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}.png")
 
 
 def system_call(params):
