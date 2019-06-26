@@ -64,7 +64,7 @@ def write_topsApp_xml(reference_granule, secondary_granule):
 
 def run_topsApp(reference_granule, secondary_granule):
     write_topsApp_xml(reference_granule, secondary_granule)
-    system_call(["topsApp.py"])
+    system_call(["topsApp.py", "--steps", "--end=geocode"])
 
 
 def get_orbit_url(granule, orbit_type):
