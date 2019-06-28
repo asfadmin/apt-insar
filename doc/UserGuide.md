@@ -2,15 +2,14 @@
 
 ## Background
 
-The Alaska Satellite Facility (ASF) has developed an advanced product toolbox (TBX) capable of conducting Radiometric Terrain Correction (RTC) with Sentinel-1 data named S-1TBX RTC. The toolbox provides automated fetching of data from ASF's datapool (https://vertex.daac.asf.alaska.edu), Digital Elevation Map (DEM) selection and stitching, and bundles the European Space Agency's Sentinel Application Platform (SNAP) toolbox with a recipe for processing RTC products from start to finish. This allows users to begin with a single granule name and in one command produce RTC analysis ready Sentinel-1 end products.
+The Alaska Satellite Facility (ASF) has developed an advanced product toolbox (TBX) capable of conducting Interferometric SAR Processing (InSAR) with the ISCE Processoe named apt-insar. The toolbox provides automated fetching of data from ASF's datapool (https://vertex.daac.asf.alaska.edu), Digital Elevation Map (DEM) selection and stitching, and bundles NASA's Jet Propultion Labritory ISCE processor for processing interferogram products from start to finish. This allows users to begin with a pair of granule names and in one command produce an interferogram product.
 
-Distortions in Synthetic Aperture Radar (SAR) imagery are induced by the side-looking nature of SAR sensors and are compounded by rugged terrain. RTC corrects geometric distortions that lead to geolocation errors by moving image pixels into the proper spatial relationship with one another based on a DEM. RTC removes the misleading influence of topography and backscatter values, combining both corrections to produce a superior product for science application and analysis.
+Insert Prargraph about InSAR here.
 
 ## Output Products
-- GeoTIFF image with 
-    - 30 meter pixel spacing
-    - Pixel values indicate gamma-0 power
-    - Projected in Universal Transverse Mercator (UTM) coordinates
+- GeoTIFF Phase image with 
+- GeoTIFF Coherence image with
+- GeoTIFF Amplitude image with
 - ArcGIS compatible ISO 19115 metadata
 
 ## System Requirements
@@ -52,7 +51,7 @@ Distortions in Synthetic Aperture Radar (SAR) imagery are induced by the side-lo
    
    <p align="center"><img src="images/advanced_settings.png" width="75%"></p>
 
-1. Download [**s1tbx-rtc.sh**](https://asfdaac.s3.amazonaws.com/s1tbx-rtc.sh) to the directory where RTC products should be saved.
+1. Download [**apt-insar.sh**](https://asfdaac.s3.amazonaws.com/s1tbx-rtc.sh) to the directory where RTC products should be saved.
 
 </details>
 
@@ -77,7 +76,7 @@ Distortions in Synthetic Aperture Radar (SAR) imagery are induced by the side-lo
    Hello from Docker!
    This message shows that your installation appears to be working correctly.
    ```
-1. Download **s1tbx-rtc.sh** to the directory where RTC products should be saved
+1. Download **apt-insar.sh** to the directory where RTC products should be saved
    ```
    wget https://raw.githubusercontent.com/asfadmin/grfn-s1tbx-rtc/master/scripts/s1tbx-rtc.sh
    ```
@@ -108,7 +107,7 @@ Distortions in Synthetic Aperture Radar (SAR) imagery are induced by the side-lo
    Hello from Docker!
    This message shows that your installation appears to be working correctly.
    ```
-1. Download **s1tbx-rtc.sh** to the directory where RTC products should be saved
+1. Download **apt-insar** to the directory where InSAR products should be saved
    ```
    wget https://raw.githubusercontent.com/asfadmin/grfn-s1tbx-rtc/master/scripts/s1tbx-rtc.sh
    ```
