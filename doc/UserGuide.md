@@ -117,7 +117,7 @@ Insert Prargraph about InSAR here.
 
 1. Find the name of the GRD or SLC granule to process from [Vertex](https://vertex.daac.asf.alaska.edu/).
    
-   *The examples below use S1B_IW_GRDH_1SDV_20190430T161529_20190430T161554_016038_01E295_771B and S1B_IW_GRDH_1SDV_20190430T161529_20190430T161554_016038_01E295_771B*.
+   *The examples below use S1A_IW_SLC__1SDV_20190518T161611_20190518T161638_027284_0313A1_AE8A and S1A_IW_SLC__1SDV_20190506T161610_20190506T161637_027109_030E29_5A71*.
 
 1. **macOS only**
 
@@ -134,7 +134,7 @@ Insert Prargraph about InSAR here.
 
 1. Execute **apt-insar.sh** with the granule name and desired options
    ```
-   sh apt-insar.sh -p S1B_IW_GRDH_1SDV_20190430T161529_20190430T161554_016038_01E295_771B -s S1B_IW_GRDH_1SDV_20190430T161529_20190430T161554_016038_01E295_771B
+   sh apt-insar.sh -s S1A_IW_SLC__1SDV_20190518T161611_20190518T161638_027284_0313A1_AE8A -r S1A_IW_SLC__1SDV_20190506T161610_20190506T161637_027109_030E29_5A71
    ```
    Processing can take up to several hours depending on the granule, internet connection, and computer resources
 
