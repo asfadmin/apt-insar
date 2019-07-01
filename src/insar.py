@@ -18,6 +18,19 @@ COLLECTION_IDS = [
 USER_AGENT = "python3 asfdaac/apt-insar"
 
 
+def update_xml_with_image_type(input_file):
+    xml_file = input_file + ".xml"
+    sed_command = 's|</imageFile>|<property name="image_type"><value>unw</value><doc>Image type used for displaying.</doc></property></imageFile>|'
+    system_call(["sed", "-i", sed_command, xml_file])
+
+
+def create_browse(input_file, output_file):
+    temp_png_file = os.path.basename(input_file) + ".png"
+    update_xml_with_image_type(input_file)
+    system_call(["mdx.py", input_file, "-kml", "browse.kml"])
+    system_call(["gdal_translate", "-of", "PNG", "-outsize", "0", "1024", temp_png_file, output_file])
+
+
 def create_geotiff(input_file, output_file, input_band=1):
     temp_file = "tmp.tif"
     system_call(["gdal_translate", "-of", "GTiff", "-a_nodata", "0", "-b", str(input_band), input_file, temp_file])
@@ -31,6 +44,7 @@ def generate_output_files(start_date, end_date, input_folder="merged", output_fo
     create_geotiff(f"{input_folder}/phsig.cor.geo", f"{output_folder}/{name}-COR.tif")
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-AMP.tif", input_band=1)
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-UNW.tif", input_band=2)
+    create_browse(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}.png")
 
 
 def system_call(params):
@@ -56,7 +70,7 @@ def write_topsApp_xml(reference_granule, secondary_granule):
 
 def run_topsApp(reference_granule, secondary_granule):
     write_topsApp_xml(reference_granule, secondary_granule)
-    system_call(["topsApp.py"])
+    system_call(["topsApp.py", "--steps", "--end=geocode"])
 
 
 def get_orbit_url(granule, orbit_type):
