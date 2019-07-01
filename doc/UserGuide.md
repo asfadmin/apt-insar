@@ -138,7 +138,7 @@ Insert Prargraph about InSAR here.
    ```
    Processing can take up to several hours depending on the granule, internet connection, and computer resources
 
-1. Upon completion, RTC products will appear in the directory where **apt-insar.sh** was executed
+1. Upon completion, InSAR products will appear in the directory where **apt-insar.sh** was executed
    ```
     INSAR FILE LIST
    ```
