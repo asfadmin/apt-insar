@@ -109,7 +109,7 @@ Insert Prargraph about InSAR here.
    ```
 1. Download **apt-insar** to the directory where InSAR products should be saved
    ```
-   wget https://raw.githubusercontent.com/asfadmin/grfn-s1tbx-rtc/master/scripts/s1tbx-rtc.sh
+   wget https://raw.githubusercontent.com/asfadmin/grfn-s1tbx-rtc/master/scripts/apt-insar.sh
    ```
 </details>
 
@@ -117,7 +117,7 @@ Insert Prargraph about InSAR here.
 
 1. Find the name of the GRD or SLC granule to process from [Vertex](https://vertex.daac.asf.alaska.edu/).
    
-   *The examples below use S1B_IW_GRDH_1SDV_20190430T161529_20190430T161554_016038_01E295_771B*.
+   *The examples below use S1B_IW_GRDH_1SDV_20190430T161529_20190430T161554_016038_01E295_771B and S1B_IW_GRDH_1SDV_20190430T161529_20190430T161554_016038_01E295_771B*.
 
 1. **macOS only**
 
@@ -125,39 +125,27 @@ Insert Prargraph about InSAR here.
 
       <p align="center"><img src="images/terminal.png" width="75%"></p>
    
-   1. In your Terminal window, navigate to the directory where **s1tbx-rtc.sh** is saved.
+   1. In your Terminal window, navigate to the directory where **apt-insar.sh** is saved.
    
       *For example, if you saved the script to your Downloads directory, type:*
       ```
       cd ~/Downloads
       ```
 
-1. Execute **s1tbx-rtc.sh** with the granule name and desired options
+1. Execute **apt-insar.sh** with the granule name and desired options
    ```
-   sh s1tbx-rtc.sh --granule S1B_IW_GRDH_1SDV_20190430T161529_20190430T161554_016038_01E295_771B
+   sh apt-insar.sh -p S1B_IW_GRDH_1SDV_20190430T161529_20190430T161554_016038_01E295_771B -s S1B_IW_GRDH_1SDV_20190430T161529_20190430T161554_016038_01E295_771B
    ```
    Processing can take up to several hours depending on the granule, internet connection, and computer resources
 
-1. Upon completion, RTC products will appear in the directory where **s1tbx-rtc.sh** was executed
+1. Upon completion, RTC products will appear in the directory where **apt-insar.sh** was executed
    ```
-   S1B_IW_GRDH_1SDV_20190430T161529_20190430T161554_016038_01E295_771B_VH_RTC.tif
-   S1B_IW_GRDH_1SDV_20190430T161529_20190430T161554_016038_01E295_771B_VH_RTC.tif.xml
-   S1B_IW_GRDH_1SDV_20190430T161529_20190430T161554_016038_01E295_771B_VV_RTC.tif
-   S1B_IW_GRDH_1SDV_20190430T161529_20190430T161554_016038_01E295_771B_VV_RTC.tif.xml
+    INSAR FILE LIST
    ```
 ## Additional Options
 
 ```
-sh s1tbx-rtc.sh --granule GRANULE [--username USERNAME] [--password PASSWORD] [--demSource {ASF,ESA}]
+sh apt-insar.sh --granule GRANULE [--username USERNAME] [--password PASSWORD] [--demSource {ASF,ESA}]
                 [--layover] [--incidenceAngle] [--clean]
 ```
-
-| Option                 | Description   | 
-|:---------------------- |:-------------| 
-| --granule | Sentinel-1 granule name. SLC and GRD granules are supported. |
-| --username | Earthdata Login username. |
-| --password | Earthdata Login password. |
-| --demSource |Source for digital elevation models: Geoid-corrected NED/SRTM sourced from ASF, or SRTM sourced from ESA. The default is ASF. |
-| --layover| Include layover shadow mask in output. | 
-| --incidenceAngle | Include projected local incidence angle in output.     | 
-| --clean |Set very small pixel values to No Data. Helpful to clean edge artifacts of granules processed before IPF version 2.90 (3/13/2018). May adversely affect valid data.  | 
+ 
