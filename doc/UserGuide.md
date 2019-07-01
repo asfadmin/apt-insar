@@ -145,7 +145,7 @@ Insert Prargraph about InSAR here.
 ## Additional Options
 
 ```
-sh apt-insar.sh --granule GRANULE [--username USERNAME] [--password PASSWORD] [--demSource {ASF,ESA}]
-                [--layover] [--incidenceAngle] [--clean]
+sh apt-insar.sh --reference-granule REFERENCE_GRANULE --secondary-granule
+                SECONDARY_GRANULE [--username USERNAME] [--password PASSWORD]
 ```
  
