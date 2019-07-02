@@ -18,8 +18,8 @@ Insert Prargraph about InSAR here.
     - Ubuntu 18.04 or later
     - CentOS 7 or later
 * 64-bit installation
-* 16 GB of RAM
-* 20 GB of available hard disk space
+* 4 GB of RAM
+* 100 GB of available hard disk space
 
 ## Installation
 
