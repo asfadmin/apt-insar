@@ -75,7 +75,7 @@ Insert Prargraph about InSAR here.
    Hello from Docker!
    This message shows that your installation appears to be working correctly.
    ```
-1. Download **apt-insar.sh** to the directory where RTC products should be saved
+1. Download **apt-insar.sh** to the directory where InSAR products should be saved
    ```
    wget https://raw.githubusercontent.com/asfadmin/grfn-s1tbx-rtc/master/scripts/apt-insar.sh
    ```
@@ -135,7 +135,7 @@ Insert Prargraph about InSAR here.
    ```
    sh apt-insar.sh --secondary-scene S1A_IW_SLC__1SDV_20190518T161611_20190518T161638_027284_0313A1_AE8A --reference-scene S1A_IW_SLC__1SDV_20190506T161610_20190506T161637_027109_030E29_5A71
    ```
-   Processing can take up to several hours depending on the granule, internet connection, and computer resources
+   Processing can take up to several hours depending on the granule pair, internet connection, and computer resources
 
 1. Upon completion, InSAR products will appear in the directory where **apt-insar.sh** was executed
    ```
