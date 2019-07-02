@@ -2,7 +2,7 @@
 
 ## Background
 
-The Alaska Satellite Facility (ASF) has developed an advanced product toolbox (APT) capable of conducting Interferometric SAR Processing (InSAR) with the ISCE Processoe named apt-insar. The toolbox provides automated fetching of data from ASF's datapool (https://vertex.daac.asf.alaska.edu), Digital Elevation Map (DEM) selection and stitching, and bundles NASA's Jet Propultion Labritory ISCE processor for processing interferogram products from start to finish. This allows users to begin with a pair of granule names and in one command produce an interferograadvanced product toolbox (APT)m product.
+The Alaska Satellite Facility (ASF) has developed an advanced product toolbox (APT) capable of conducting Interferometric SAR Processing (InSAR) with the ISCE Processor named apt-insar. The toolbox provides automated fetching of data from ASF's datapool (https://vertex.daac.asf.alaska.edu), Digital Elevation Map (DEM) selection and stitching, and bundles NASA's Jet Propultion Labritory ISCE processor for processing interferogram products from start to finish. This allows users to begin with a pair of granule names and in one command produce an interferograadvanced product toolbox (APT)m product.
 
 Insert Prargraph about InSAR here.
 
