@@ -114,7 +114,7 @@ Insert Prargraph about InSAR here.
 
 ## Usage
 
-1. Find the name of the GRD or SLC granule to process from [Vertex](https://vertex.daac.asf.alaska.edu/).
+1. Find the name of the SLC granules to process from [Vertex](https://vertex.daac.asf.alaska.edu/).
    
    *The examples below use S1A_IW_SLC__1SDV_20190518T161611_20190518T161638_027284_0313A1_AE8A and S1A_IW_SLC__1SDV_20190506T161610_20190506T161637_027109_030E29_5A71*.
 
@@ -131,9 +131,9 @@ Insert Prargraph about InSAR here.
       cd ~/Downloads
       ```
 
-1. Execute **apt-insar.sh** with the granule name and desired options
+1. Execute **apt-insar.sh** with the granule pair and desired options
    ```
-   sh apt-insar.sh -s S1A_IW_SLC__1SDV_20190518T161611_20190518T161638_027284_0313A1_AE8A -r S1A_IW_SLC__1SDV_20190506T161610_20190506T161637_027109_030E29_5A71
+   sh apt-insar.sh --secondary-scene S1A_IW_SLC__1SDV_20190518T161611_20190518T161638_027284_0313A1_AE8A --reference-scene S1A_IW_SLC__1SDV_20190506T161610_20190506T161637_027109_030E29_5A71
    ```
    Processing can take up to several hours depending on the granule, internet connection, and computer resources
 
