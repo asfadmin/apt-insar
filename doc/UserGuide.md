@@ -50,7 +50,7 @@ Insert Prargraph about InSAR here.
    
    <p align="center"><img src="images/advanced_settings.png" width="75%"></p>
 
-1. Download [**apt-insar.sh**](https://asfdaac.s3.amazonaws.com/s1tbx-rtc.sh) to the directory where InSAR products should be saved.
+1. Download [**apt-insar.sh**](https://asfdaac.s3.amazonaws.com/apt-insar.sh) to the directory where InSAR products should be saved.
 
 </details>
 
@@ -77,7 +77,7 @@ Insert Prargraph about InSAR here.
    ```
 1. Download **apt-insar.sh** to the directory where RTC products should be saved
    ```
-   wget https://raw.githubusercontent.com/asfadmin/grfn-s1tbx-rtc/master/scripts/s1tbx-rtc.sh
+   wget https://raw.githubusercontent.com/asfadmin/grfn-s1tbx-rtc/master/scripts/apt-insar.sh
    ```
 </details>
 
