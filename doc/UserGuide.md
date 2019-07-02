@@ -10,7 +10,6 @@ Insert Prargraph about InSAR here.
 - GeoTIFF Unwrapped Phase image with 
 - GeoTIFF Coherence image with
 - GeoTIFF Amplitude image with
-- ArcGIS compatible ISO 19115 metadata
 
 ## System Requirements
 
