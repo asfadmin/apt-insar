@@ -7,7 +7,7 @@ The Alaska Satellite Facility (ASF) has developed an advanced product toolbox (A
 Insert Prargraph about InSAR here.
 
 ## Output Products
-- GeoTIFF Phase image with 
+- GeoTIFF Unwrapped Phase image with 
 - GeoTIFF Coherence image with
 - GeoTIFF Amplitude image with
 - ArcGIS compatible ISO 19115 metadata
