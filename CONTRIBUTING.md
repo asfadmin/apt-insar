@@ -90,6 +90,3 @@ Please do NOT
 Change any commit or history of anything in the repo.
 
 
-
-
-Template for CONTRIBUTING.md taken from OSGeo/gdal/CONTRIBUTING.md
