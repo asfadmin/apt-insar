@@ -236,4 +236,4 @@ if __name__ == "__main__":
 
     run_topsApp(reference_granule, secondary_granule, dem_filename)
 
-    generate_output_files(reference_granule["aquisition_date"], secondary_granule["aquisition_date"])
+    generate_output_files(reference_granule["acquisition_date"], secondary_granule["acquisition_date"])
