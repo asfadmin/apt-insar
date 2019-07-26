@@ -3,6 +3,7 @@ import subprocess
 from argparse import ArgumentParser
 from zipfile import ZipFile
 from getpass import getpass
+from shutil import rmtree
 
 import requests
 from jinja2 import Template
@@ -166,6 +167,11 @@ def get_dem(bbox):
     dem_filename = "dem.envi"
     xml_filename = f"{dem_filename}.xml"
     get_ISCE_dem(bbox["lon_min"], bbox["lat_min"], bbox["lon_max"], bbox["lat_max"], dem_filename, xml_filename)
+    os.unlink("temp.vrt")
+    os.unlink("temp_dem.tif")
+    if os.path.exists("temp_dem_wgs84.tif"):
+        os.unlink("temp_dem_wgs84.tif")
+    rmtree("DEM")
     return dem_filename
 
 
