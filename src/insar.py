@@ -58,6 +58,7 @@ def create_geotiff(input_file, output_file, input_band=1):
 
 
 def generate_output_files(start_date, end_date, input_folder="merged", output_folder="/output"):
+    print("\nGenerating output files")
     name = f"S1-INSAR-{start_date}-{end_date}"
     create_geotiff(f"{input_folder}/phsig.cor.geo", f"{output_folder}/{name}-COR.tif")
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-AMP.tif", input_band=1)
@@ -87,6 +88,7 @@ def write_topsApp_xml(reference_granule, secondary_granule, dem_filename=None):
 
 
 def run_topsApp(reference_granule, secondary_granule, dem_filename=None):
+    print("\nRunning topsApp.py")
     write_topsApp_xml(reference_granule, secondary_granule, dem_filename)
     system_call(["topsApp.py", "--steps", "--end=geocode"])
 
