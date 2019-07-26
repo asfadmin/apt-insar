@@ -9,7 +9,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
     apt install -y gfortran libmotif-dev libhdf5-dev libfftw3-dev libgdal-dev scons python3 cython3 python3-scipy python3-matplotlib python3-h5py python3-gdal python3-pip wget curl gdal-bin imagemagick git && \
     rm /etc/ImageMagick-6/policy.xml && \
-    pip3 install jinja2 requests boto3 lxml && \
+    pip3 install jinja2 requests boto3 lxml shapely && \
     git clone --single-branch --branch python3 https://github.com/asfadmin/hyp3-lib.git /usr/local/etc/hyp3-lib && \
     cd /opt && \
     wget --no-verbose https://github.com/isce-framework/isce2/archive/v2.3.1.tar.gz && \
