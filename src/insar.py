@@ -172,6 +172,7 @@ def get_args():
     parser.add_argument("--secondary-granule", "-s", type=str, help="Secondary granule name.", required=True)
     parser.add_argument("--username", "-u", type=str, help="Earthdata Login username.")
     parser.add_argument("--password", "-p", type=str, help="Earthdata Login password.")
+    parser.add_argument("--dem", "-d", type=str, help="Digital Elevation Model. ASF automatically selects the best geoid-corrected NED/SRTM DEM.  SRTM uses ISCE's default settings.", choices=["ASF", "SRTM"], default="ASF")
     args = parser.parse_args()
     
     if not args.username:
@@ -191,7 +192,10 @@ if __name__ == "__main__":
 
     reference_granule = get_granule(args.reference_granule)
     secondary_granule = get_granule(args.secondary_granule)
-    dem_filename = None
+    if args.dem == "ASF":
+        dem_filename = None
+    else:
+        dem_filename = None
 
     run_topsApp(reference_granule, secondary_granule, dem_filename)
 
