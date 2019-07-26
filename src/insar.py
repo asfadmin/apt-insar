@@ -116,6 +116,9 @@ def download_file(url):
     local_filename = url.split("/")[-1]
     headers = {"User-Agent": USER_AGENT}
     with requests.get(url, headers=headers, stream=True) as r:
+        if r.status_code == 401:
+            print("ERROR: Invalid username or password")
+            exit(1)
         r.raise_for_status()
         with open(local_filename, "wb") as f:
             for chunk in r.iter_content(chunk_size=CHUNK_SIZE):
