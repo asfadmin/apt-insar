@@ -6,6 +6,7 @@ from getpass import getpass
 
 import requests
 from jinja2 import Template
+from get_dem import get_ISCE_dem
 
 
 CHUNK_SIZE = 5242880
@@ -160,6 +161,14 @@ def get_granule(granule):
     }
 
 
+def get_dem(bbox):
+    print("\nPreparing digital elevation model")
+    dem_filename = "dem.envi"
+    xml_filename = f"{dem_filename}.xml"
+    get_ISCE_dem(bbox["lon_min"], bbox["lat_min"], bbox["lon_max"], bbox["lat_max"], dem_filename, xml_filename)
+    return dem_filename
+
+
 def write_netrc_file(username, password):
     netrc_file = os.environ["HOME"] + "/.netrc"
     with open(netrc_file, "w") as f:
@@ -193,7 +202,13 @@ if __name__ == "__main__":
     reference_granule = get_granule(args.reference_granule)
     secondary_granule = get_granule(args.secondary_granule)
     if args.dem == "ASF":
-        dem_filename = None
+        bbox = {
+            "lon_min": -120.663,
+            "lon_max": -117.323,
+            "lat_min": 39.879,
+            "lat_max": 41.890,
+        }
+        dem_filename = get_dem(bbox)
     else:
         dem_filename = None
 
