@@ -189,8 +189,14 @@ if __name__ == "__main__":
 
     write_netrc_file(args.username, args.password)
 
-    reference_granule = get_granule(args.reference_granule)
-    secondary_granule = get_granule(args.secondary_granule)
+    try:
+        reference_granule = get_granule(args.reference_granule)
+        secondary_granule = get_granule(args.secondary_granule)
+    except requests.HTTPError as e:
+        if e.args[0].startswith("401 Client Error:"):
+            print("ERROR: Invalid username or password")
+            exit(1)
+        raise
 
     run_topsApp(reference_granule, secondary_granule)
 
