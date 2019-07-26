@@ -61,15 +61,15 @@ def get_xml_template():
     return template
 
 
-def write_topsApp_xml(reference_granule, secondary_granule):
+def write_topsApp_xml(reference_granule, secondary_granule, dem_filename=None):
     template = get_xml_template()
-    rendered = template.render(reference_granule=reference_granule, secondary_granule=secondary_granule)
+    rendered = template.render(reference_granule=reference_granule, secondary_granule=secondary_granule, dem_filename=dem_filename)
     with open("topsApp.xml", "w") as f:
         f.write(rendered)
 
 
-def run_topsApp(reference_granule, secondary_granule):
-    write_topsApp_xml(reference_granule, secondary_granule)
+def run_topsApp(reference_granule, secondary_granule, dem_filename=None):
+    write_topsApp_xml(reference_granule, secondary_granule, dem_filename)
     system_call(["topsApp.py", "--steps", "--end=geocode"])
 
 
@@ -191,7 +191,8 @@ if __name__ == "__main__":
 
     reference_granule = get_granule(args.reference_granule)
     secondary_granule = get_granule(args.secondary_granule)
+    dem_filename = None
 
-    run_topsApp(reference_granule, secondary_granule)
+    run_topsApp(reference_granule, secondary_granule, dem_filename)
 
     generate_output_files(reference_granule["aquisition_date"], secondary_granule["aquisition_date"])

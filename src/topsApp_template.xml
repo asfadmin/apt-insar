@@ -3,6 +3,9 @@
     <property name="do unwrap">True</property>
     <property name="unwrapper name">snaphu_mcf</property>
     <property name="geocode list">['merged/phsig.cor', 'merged/filt_topophase.unw']</property>
+    {% if dem_filename %}
+    <property name="dem filename">{{ dem_filename }}</property>
+    {% endif %}
     <component name="master">
       <property name="output directory">master</property>
       <property name="safe">{{ reference_granule.directory }}</property>
