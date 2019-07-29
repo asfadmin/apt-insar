@@ -3,9 +3,12 @@ import subprocess
 from argparse import ArgumentParser
 from zipfile import ZipFile
 from getpass import getpass
+from shutil import rmtree
 
 import requests
 from jinja2 import Template
+from get_dem import get_ISCE_dem
+from shapely.geometry import Polygon
 
 
 CHUNK_SIZE = 5242880
@@ -16,6 +19,21 @@ COLLECTION_IDS = [
     "C1327985661-ASF",  # SENTINEL-1B_SLC
 ]
 USER_AGENT = "python3 asfdaac/apt-insar"
+
+
+def get_polygon(entry):
+    floats = [float(ii) for ii in entry["polygons"][0][0].split()]
+    points = zip(floats[::2], floats[1::2])
+    return Polygon(points)
+
+
+def get_bounding_box(polygon):
+    return {
+        "lat_min": polygon.bounds[0],
+        "lon_min": polygon.bounds[1],
+        "lat_max": polygon.bounds[2],
+        "lon_max": polygon.bounds[3],
+    }
 
 
 def update_xml_with_image_type(input_file):
@@ -40,6 +58,7 @@ def create_geotiff(input_file, output_file, input_band=1):
 
 
 def generate_output_files(start_date, end_date, input_folder="merged", output_folder="/output"):
+    print("\nGenerating output files")
     name = f"S1-INSAR-{start_date}-{end_date}"
     create_geotiff(f"{input_folder}/phsig.cor.geo", f"{output_folder}/{name}-COR.tif")
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-AMP.tif", input_band=1)
@@ -61,15 +80,16 @@ def get_xml_template():
     return template
 
 
-def write_topsApp_xml(reference_granule, secondary_granule):
+def write_topsApp_xml(reference_granule, secondary_granule, dem_filename=None):
     template = get_xml_template()
-    rendered = template.render(reference_granule=reference_granule, secondary_granule=secondary_granule)
+    rendered = template.render(reference_granule=reference_granule, secondary_granule=secondary_granule, dem_filename=dem_filename)
     with open("topsApp.xml", "w") as f:
         f.write(rendered)
 
 
-def run_topsApp(reference_granule, secondary_granule):
-    write_topsApp_xml(reference_granule, secondary_granule)
+def run_topsApp(reference_granule, secondary_granule, dem_filename=None):
+    print("\nRunning topsApp.py")
+    write_topsApp_xml(reference_granule, secondary_granule, dem_filename)
     system_call(["topsApp.py", "--steps", "--end=geocode"])
 
 
@@ -127,7 +147,7 @@ def download_file(url):
     return local_filename
 
 
-def get_download_url(granule):
+def get_granule_metadata(granule):
     params = {
         "readable_granule_name": granule,
         "provider": "ASF",
@@ -140,27 +160,44 @@ def get_download_url(granule):
     if not cmr_data["feed"]["entry"]:
         return None
 
+    entry = cmr_data["feed"]["entry"][0]
+    polygon = get_polygon(entry)
+    granule_metadata = {
+        "acquisition_date": granule[17:25],
+        "bbox": get_bounding_box(polygon),
+        "directory": f"{granule}.SAFE",
+    }
+
     for product in cmr_data["feed"]["entry"][0]["links"]:
         if "data" in product["rel"]:
-            return product["href"]
+            granule_metadata["download_url"] = product["href"]
 
-    return None
+    return granule_metadata
 
 
 def get_granule(granule):
     print(f"\nPreparing {granule}")
 
-    granule_url = get_download_url(granule)
-    granule_zip = download_file(granule_url)
+    granule_metadata = get_granule_metadata(granule)
+    granule_zip = download_file(granule_metadata["download_url"])
     unzip(granule_zip)
 
-    orbit_file = get_orbit_file(granule)
+    granule_metadata["orbit_file"] = get_orbit_file(granule)
 
-    return {
-        "directory": f"{granule}.SAFE",
-        "orbit_file": orbit_file,
-        "aquisition_date": granule[17:25]
-    }
+    return granule_metadata
+
+
+def get_dem(bbox):
+    print("\nPreparing digital elevation model")
+    dem_filename = "dem.envi"
+    xml_filename = f"{dem_filename}.xml"
+    get_ISCE_dem(bbox["lon_min"], bbox["lat_min"], bbox["lon_max"], bbox["lat_max"], dem_filename, xml_filename)
+    os.unlink("temp.vrt")
+    os.unlink("temp_dem.tif")
+    if os.path.exists("temp_dem_wgs84.tif"):
+        os.unlink("temp_dem_wgs84.tif")
+    rmtree("DEM")
+    return dem_filename
 
 
 def write_netrc_file(username, password):
@@ -175,6 +212,7 @@ def get_args():
     parser.add_argument("--secondary-granule", "-s", type=str, help="Secondary granule name.", required=True)
     parser.add_argument("--username", "-u", type=str, help="Earthdata Login username.")
     parser.add_argument("--password", "-p", type=str, help="Earthdata Login password.")
+    parser.add_argument("--dem", "-d", type=str, help="Digital Elevation Model. ASF automatically selects the best geoid-corrected NED/SRTM DEM.  SRTM uses ISCE's default settings.", choices=["ASF", "SRTM"], default="ASF")
     args = parser.parse_args()
     
     if not args.username:
@@ -194,7 +232,11 @@ if __name__ == "__main__":
 
     reference_granule = get_granule(args.reference_granule)
     secondary_granule = get_granule(args.secondary_granule)
+    if args.dem == "ASF":
+        dem_filename = get_dem(reference_granule["bbox"])
+    else:
+        dem_filename = None
 
-    run_topsApp(reference_granule, secondary_granule)
+    run_topsApp(reference_granule, secondary_granule, dem_filename)
 
-    generate_output_files(reference_granule["aquisition_date"], secondary_granule["aquisition_date"])
+    generate_output_files(reference_granule["acquisition_date"], secondary_granule["acquisition_date"])
