@@ -6,6 +6,7 @@
     {% if dem_filename %}
     <property name="dem filename">{{ dem_filename }}</property>
     {% endif %}
+    <property name="do esd">False</property>
     <component name="master">
       <property name="output directory">master</property>
       <property name="safe">{{ reference_granule.directory }}</property>
