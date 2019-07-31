@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 LABEL MAINTAINER="Alaska Satellite Facility"
 
-ENV WORKDIR=/opt/isce2-2.3.1
+ENV WORKDIR=/opt/isce2-2.3.2
 ENV PYTHONPATH=$WORKDIR/configuration
 ENV SCONS_CONFIG_DIR=$WORKDIR
 ENV DEBIAN_FRONTEND=noninteractive
@@ -12,8 +12,8 @@ RUN apt update && \
     pip3 install jinja2 requests boto3 lxml shapely && \
     git clone --single-branch --branch python3 https://github.com/asfadmin/hyp3-lib.git /usr/local/etc/hyp3-lib && \
     cd /opt && \
-    wget --no-verbose https://github.com/isce-framework/isce2/archive/v2.3.1.tar.gz && \
-    tar -xzf v2.3.1.tar.gz && \
+    wget --no-verbose https://github.com/isce-framework/isce2/archive/v2.3.2.tar.gz && \
+    tar -xzf v2.3.2.tar.gz && \
     mkdir /work /output && \
     chmod 777 /work /output
 
