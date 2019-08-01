@@ -30,7 +30,7 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 
 <details><summary>macOS</summary>
 
-1. Download the [Docker for Mac](https://download.docker.com/mac/stable/Docker.dmg) installer (~500 MB).
+1. Download the [Docker for Mac](https://download.docker.com/mac/stable/Docker.dmg) installer (~650 MB).
 
 1. Double-click Docker.dmg to open the installer, then drag Moby the whale to the Applications folder.
 
