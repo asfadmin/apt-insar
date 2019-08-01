@@ -110,7 +110,7 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 
 1. Find the name of the SLC granules to process from [ASF Data Search](https://search.asf.alaska.edu/).
    
-   *The examples below use S1A_IW_SLC__1SDV_20190518T161611_20190518T161638_027284_0313A1_AE8A and S1A_IW_SLC__1SDV_20190506T161610_20190506T161637_027109_030E29_5A71*.
+   *The examples below use S1A_IW_SLC__1SDV_20190716T135159_20190716T135226_028143_032DC3_512B and S1A_IW_SLC__1SDV_20190704T135158_20190704T135225_027968_032877_1C4D*.
 
 1. **macOS only**
 
@@ -127,16 +127,16 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 
 1. Execute **apt-insar.sh** with the granule pair and desired options
    ```
-   sh apt-insar.sh --reference-granule S1A_IW_SLC__1SDV_20190518T161611_20190518T161638_027284_0313A1_AE8A --secondary-granule S1A_IW_SLC__1SDV_20190506T161610_20190506T161637_027109_030E29_5A71
+   sh apt-insar.sh --reference-granule S1A_IW_SLC__1SDV_20190716T135159_20190716T135226_028143_032DC3_512B --secondary-granule S1A_IW_SLC__1SDV_20190704T135158_20190704T135225_027968_032877_1C4D
    ```
    Processing can take up to several hours depending on the granule pair, internet connection, and computer resources
 
 1. Upon completion, InSAR products will appear in the directory where **apt-insar.sh** was executed
    ```
-    S1-INSAR-20190518-20190506-AMP.tif
-    S1-INSAR-20190518-20190506-COR.tif
-    S1-INSAR-20190518-20190506-UNW.tif
-    S1-INSAR-20190518-20190506.png
+   S1-INSAR-20190716-20190704-AMP.tif
+   S1-INSAR-20190716-20190704-COR.tif
+   S1-INSAR-20190716-20190704-UNW.tif
+   S1-INSAR-20190716-20190704.png
    ```
 ## Additional Options
 
