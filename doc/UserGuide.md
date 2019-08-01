@@ -50,26 +50,26 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 
 <details><summary>Ubuntu 18.04</summary>
 
-1. Install Docker using apt
+1. Install Docker using apt.
    ```
    sudo apt update
    sudo apt install -y docker.io
    ```
-1. Add your user to the docker group
+1. Add your user to the docker group.
    ```
    sudo usermod -aG docker $USER
    ```
-1. Log out and log back in for the group change to take effect
-1. To verify everything is working run the docker command
+1. Log out and log back in for the group change to take effect.
+1. To verify everything is working run the docker command:
    ```
    docker run hello-world
    ```
-   Confirm you see the following in your output
+   Confirm you see the following in your output:
    ```
    Hello from Docker!
    This message shows that your installation appears to be working correctly.
    ```
-1. Download **apt-insar.sh** to the directory where InSAR products should be saved
+1. Download **apt-insar.sh** to the directory where InSAR products should be saved.
    ```
    wget https://raw.githubusercontent.com/asfadmin/apt-insar/master/scripts/apt-insar.sh
    ```
@@ -77,30 +77,30 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 
 <details><summary>CentOS 7</summary>
 
-1. Install Docker
+1. Install Docker.
    ```
    curl -fsSL https://get.docker.com/ | sh
    ```
-1. Create a docker group and add your user to it
+1. Create a docker group and add your user to it.
    ```
    sudo groupadd docker
    sudo usermod -aG docker $USER
    ```
-1. Log out and log back in for the group change to take effect
-1. Start Docker
+1. Log out and log back in for the group change to take effect.
+1. Start Docker.
    ```
    sudo service docker start
    ```
-1. To verify everything is working run the docker command
+1. To verify everything is working run the docker command:
    ```
    docker run hello-world
    ```
-   Confirm you see the following in your output
+   Confirm you see the following in your output:
    ```
    Hello from Docker!
    This message shows that your installation appears to be working correctly.
    ```
-1. Download **apt-insar** to the directory where InSAR products should be saved
+1. Download **apt-insar** to the directory where InSAR products should be saved.
    ```
    wget https://raw.githubusercontent.com/asfadmin/apt-insar/master/scripts/apt-insar.sh
    ```
@@ -114,7 +114,7 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 
 1. **macOS only**
 
-   1. Open the Terminal app
+   1. Open the Terminal app.
 
       <p align="center"><img src="images/terminal.png" width="75%"></p>
    
@@ -125,13 +125,13 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
       cd ~/Downloads
       ```
 
-1. Execute **apt-insar.sh** with the granule pair and desired options
+1. Execute **apt-insar.sh** with the granule pair and  any desired options.
    ```
    sh apt-insar.sh --reference-granule S1A_IW_SLC__1SDV_20190716T135159_20190716T135226_028143_032DC3_512B --secondary-granule S1A_IW_SLC__1SDV_20190704T135158_20190704T135225_027968_032877_1C4D
    ```
-   Processing can take up to several hours depending on the granule pair, internet connection, and computer resources
+   Processing can take up to several hours depending on the granule pair, internet connection, and computer resources.
 
-1. Upon completion, InSAR products will appear in the directory where **apt-insar.sh** was executed
+1. Upon completion, InSAR products will appear in the directory where **apt-insar.sh** was executed.
    ```
    S1-INSAR-20190716-20190704-AMP.tif
    S1-INSAR-20190716-20190704-COR.tif
