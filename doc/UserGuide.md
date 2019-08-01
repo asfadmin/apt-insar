@@ -119,7 +119,7 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 
 ## Usage
 
-1. Find the name of the SLC granules to process from [Vertex](https://vertex.daac.asf.alaska.edu/).
+1. Find the name of the SLC granules to process from [ASF Data Search](https://search.asf.alaska.edu/).
    
    *The examples below use S1A_IW_SLC__1SDV_20190518T161611_20190518T161638_027284_0313A1_AE8A and S1A_IW_SLC__1SDV_20190506T161610_20190506T161637_027109_030E29_5A71*.
 
