@@ -44,17 +44,6 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
    
    <p align="center"><img src="images/docker_is_running.png" width="40%"></p>
 
-1. Click the Docker icon in the top status bar and select "Preferences".
-
-   <p align="center"><img src="images/preferences.png" width="30%"></p>
-
-   1. Select "Advanced".
-   1. Set "CPUs" to 4 or higher. More CPUs means faster processing, but may leave fewer resources for other programs during processing.
-   1. Set "Memory" to 16.0 GiB or higher.
-   1. Click "Apply & Restart" and wait for the green "Docker Engine is running" message to reappear.
-   
-   <p align="center"><img src="images/advanced_settings.png" width="75%"></p>
-
 1. Download [**apt-insar.sh**](https://asfdaac.s3.amazonaws.com/apt-insar.sh) to the directory where InSAR products should be saved.
 
 </details>
