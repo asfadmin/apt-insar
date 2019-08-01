@@ -5,11 +5,11 @@
 The Alaska Satellite Facility (ASF) has developed an advanced product toolbox (APT) capable of conducting Interferometric SAR Processing (InSAR) leveraging the ISCE Processor named apt-insar. The toolbox provides automated fetching of data from ASF's datapool (https://vertex.daac.asf.alaska.edu), Digital Elevation Map (DEM) selection and stitching, and bundles NASA's Jet Propultion Labritory (JPL) ISCE processor to produce interferogram products from start to finish. This allows users to begin with a pair of granule names and in one command produce an analysis ready interferogram.
 
 Interferograms measure millimeter-scale changes in deformation over spans of days to years. Applications include:
-*Measuring tectonic deformation due to earthquakes
-*Deformation associated with volcanic eruptions
-*Ground subsistence stemming from water or oil extraction from underground reservoirs
-*Monitoring landscape features such as landslides, urban growth, or deforestation
-*Measuring glacial motion and deformation
+* Measuring tectonic deformation due to earthquakes
+* Deformation associated with volcanic eruptions
+* Ground subsistence stemming from water or oil extraction from underground reservoirs
+* Monitoring landscape features such as landslides, urban growth, or deforestation
+* Measuring glacial motion and deformation
 
 ## Output Products
 - GeoTIFF Unwrapped Phase image with 
