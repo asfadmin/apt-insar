@@ -138,7 +138,7 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 
 1. Execute **apt-insar.sh** with the granule pair and desired options
    ```
-   sh apt-insar.sh --secondary-scene S1A_IW_SLC__1SDV_20190518T161611_20190518T161638_027284_0313A1_AE8A --reference-scene S1A_IW_SLC__1SDV_20190506T161610_20190506T161637_027109_030E29_5A71
+   sh apt-insar.sh --reference-granule S1A_IW_SLC__1SDV_20190518T161611_20190518T161638_027284_0313A1_AE8A --secondary-granule S1A_IW_SLC__1SDV_20190506T161610_20190506T161637_027109_030E29_5A71
    ```
    Processing can take up to several hours depending on the granule pair, internet connection, and computer resources
 
