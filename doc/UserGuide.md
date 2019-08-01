@@ -12,9 +12,11 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 * Measuring glacial motion and deformation
 
 ## Output Products
-- GeoTIFF Unwrapped Phase image with 
-- GeoTIFF Coherence image with
-- GeoTIFF Amplitude image with
+- InSAR data products in GeoTIFF format, WGS84 projection, and 30 meter pixel spacing:
+   - Amplitude image
+   - Coherence image
+   - Unwrapped phase image
+- Browse image of wrapped phase and amplitude in PNG format
 
 ## System Requirements
 
