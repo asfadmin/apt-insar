@@ -144,7 +144,10 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 
 1. Upon completion, InSAR products will appear in the directory where **apt-insar.sh** was executed
    ```
-    INSAR FILE LIST
+    S1-INSAR-20190518-20190506-AMP.tif
+    S1-INSAR-20190518-20190506-COR.tif
+    S1-INSAR-20190518-20190506-UNW.tif
+    S1-INSAR-20190518-20190506.png
    ```
 ## Additional Options
 
