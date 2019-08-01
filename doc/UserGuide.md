@@ -149,7 +149,14 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 ## Additional Options
 
 ```
-sh apt-insar.sh --reference-granule REFERENCE_GRANULE --secondary-granule
-                SECONDARY_GRANULE [--username USERNAME] [--password PASSWORD]
+ sh apt-insar.sh --reference-granule REFERENCE_GRANULE --secondary-granule SECONDARY_GRANULE
+                 [--username USERNAME] [--password PASSWORD] [--dem {ASF,SRTM}]
 ```
- 
+
+| Option | Description |
+|:---|:---|
+| --reference-granule | Reference granule name. |
+| --reference-granule | Secondary granule name. |
+| --username | Earthdata Login username. |
+| --password | Earthdata Login password. |
+| --dem | Digital Elevation Model. ASF automatically selects the best geoid-corrected NED/SRTM DEM. SRTM uses ISCE's default settings. |
