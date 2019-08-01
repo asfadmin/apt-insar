@@ -156,7 +156,7 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 | Option | Description |
 |:---|:---|
 | --reference-granule | Reference granule name. |
-| --reference-granule | Secondary granule name. |
+| --secondary-granule | Secondary granule name. |
 | --username | Earthdata Login username. |
 | --password | Earthdata Login password. |
 | --dem | Digital Elevation Model. ASF automatically selects the best geoid-corrected NED/SRTM DEM. SRTM uses ISCE's default settings. |
