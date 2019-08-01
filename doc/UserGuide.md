@@ -82,7 +82,7 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
    ```
 1. Download **apt-insar.sh** to the directory where InSAR products should be saved
    ```
-   wget https://raw.githubusercontent.com/asfadmin/grfn-s1tbx-rtc/master/scripts/apt-insar.sh
+   wget https://raw.githubusercontent.com/asfadmin/apt-insar/master/scripts/apt-insar.sh
    ```
 </details>
 
@@ -113,7 +113,7 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
    ```
 1. Download **apt-insar** to the directory where InSAR products should be saved
    ```
-   wget https://raw.githubusercontent.com/asfadmin/grfn-s1tbx-rtc/master/scripts/apt-insar.sh
+   wget https://raw.githubusercontent.com/asfadmin/apt-insar/master/scripts/apt-insar.sh
    ```
 </details>
 
