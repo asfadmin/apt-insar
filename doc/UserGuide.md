@@ -52,14 +52,14 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 
    1. Select "Disk"
       1. Set "Disk image size" to 96.0 GB or higher.
-      1. Click "Apply" and wait for the green "Docker Engine is running" message to reappear.
+      1. Click "Apply" and wait for the green "Docker Desktop is running" message to reappear.
 
    <p align="center"><img src="images/disk_settings.png" width="75%"></p>
 
    1. Select "Advanced".
       1. Set "CPUs" to 2 or higher. More CPUs means faster processing, but may leave fewer resources for other programs during processing.
       1. Set "Memory" to 4.0 GiB or higher.
-      1. Click "Apply & Restart" and wait for the green "Docker Engine is running" message to reappear.
+      1. Click "Apply & Restart" and wait for the green "Docker Desktop is running" message to reappear.
 
    <p align="center"><img src="images/advanced_settings.png" width="75%"></p>
 
