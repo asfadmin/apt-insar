@@ -52,6 +52,7 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 
    1. Select "Disk"
       1. Set "Disk image size" to 96.0 GB or higher.
+      1. Click "Apply & Restart" and wait for the green "Docker Engine is running" message to reappear.
 
    <p align="center"><img src="images/disk_settings.png" width="75%"></p>
 
