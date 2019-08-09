@@ -34,7 +34,7 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 
 1. Download the [Docker for Mac](https://download.docker.com/mac/stable/Docker.dmg) installer (~650 MB).
 
-1. Double-click Docker.dmg to open the installer, then drag Moby the whale to the Applications folder.
+1. Double-click Docker.dmg to open the installer, then drag the Docker icon to the Applications folder.
 
    <p align="center"><img src="images/drag_and_drop.png" width="75%"></p>
 
@@ -45,6 +45,22 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
    <p align="center"><img src="images/applications_folder.png" width="75%"></p>
    
    <p align="center"><img src="images/docker_is_running.png" width="40%"></p>
+
+1. Click the Docker icon in the top status bar and select "Preferences".
+
+   <p align="center"><img src="images/preferences.png" width="30%"></p>
+
+   1. Select "Disk"
+      1. Set "Disk image size" to 96.0 GB or higher.
+
+   <p align="center"><img src="images/disk_settings.png" width="75%"></p>
+
+   1. Select "Advanced".
+      1. Set "CPUs" to 4 or higher. More CPUs means faster processing, but may leave fewer resources for other programs during processing.
+      1. Set "Memory" to 16.0 GiB or higher.
+      1. Click "Apply & Restart" and wait for the green "Docker Engine is running" message to reappear.
+
+   <p align="center"><img src="images/advanced_settings.png" width="75%"></p>
 
 1. Download [**apt-insar.sh**](https://asfdaac.s3.amazonaws.com/apt-insar.sh) to the directory where InSAR products should be saved.
 
