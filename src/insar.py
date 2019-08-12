@@ -175,16 +175,27 @@ def get_granule_metadata(granule):
     return granule_metadata
 
 
-def get_granule(granule):
+def get_metadata(granule):
     print(f"\nPreparing {granule}")
-
     granule_metadata = get_granule_metadata(granule)
-    granule_zip = download_file(granule_metadata["download_url"])
-    unzip(granule_zip)
-
     granule_metadata["orbit_file"] = get_orbit_file(granule)
 
     return granule_metadata
+
+
+def get_granule(granule):
+    print(f"\nDownloading {granule}")
+    granule_zip = download_file(granule)
+    unzip(granule_zip)
+
+
+def validate_granules(reference_granule, secondary_granule):
+    if reference_granule["download_url"]:
+        print("ERROR: Either reference granule doesn't exist or it is not a SLC product")
+        exit(1)
+    if secondary_granule["download_url"]:
+        print("ERROR: Either secondary granule doesn't exist or it is not a SLC product")
+        exit(1)
 
 
 def get_dem(bbox):
@@ -214,13 +225,13 @@ def get_args():
     parser.add_argument("--password", "-p", type=str, help="Earthdata Login password.")
     parser.add_argument("--dem", "-d", type=str, help="Digital Elevation Model. ASF automatically selects the best geoid-corrected NED/SRTM DEM.  SRTM uses ISCE's default settings.", choices=["ASF", "SRTM"], default="ASF")
     args = parser.parse_args()
-    
+
     if not args.username:
         args.username = input("\nEarthdata Login username: ")
 
     if not args.password:
         args.password = getpass("\nEarthdata Login password: ")
-        
+
     return args
 
 
@@ -230,12 +241,18 @@ if __name__ == "__main__":
 
     write_netrc_file(args.username, args.password)
 
-    reference_granule = get_granule(args.reference_granule)
-    secondary_granule = get_granule(args.secondary_granule)
+    reference_granule = get_metadata(args.reference_granule)
+    secondary_granule = get_metadata(args.secondary_granule)
+
+    validate_granules(reference_granule, secondary_granule)
+
     if args.dem == "ASF":
         dem_filename = get_dem(reference_granule["bbox"])
     else:
         dem_filename = None
+
+    get_granule(reference_granule["download_url"])
+    get_granule(secondary_granule["download_url"])
 
     run_topsApp(reference_granule, secondary_granule, dem_filename)
 
