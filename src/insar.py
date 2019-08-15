@@ -198,7 +198,7 @@ def validate_granules(reference_granule, secondary_granule):
     if not secondary_granule:
         print("ERROR: Either secondary granule doesn't exist or it is not a SLC product")
         exit(1)
-    if not reference_granule['polygon'].intersects(secondary_granule['polygon']):
+    if not reference_granule["polygon"].intersects(secondary_granule["polygon"]):
         print("ERROR: The reference granule and the secondary granule do not overlap.")
         exit(1)
 
