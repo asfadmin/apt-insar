@@ -244,21 +244,16 @@ def get_args():
 
 
 if __name__ == "__main__":
-
     args = get_args()
-
     write_netrc_file(args.username, args.password)
 
     reference_granule = get_metadata(args.reference_granule)
     secondary_granule = get_metadata(args.secondary_granule)
-
     validate_granules(reference_granule, secondary_granule)
 
     dem_filename = get_dem(args.dem, reference_granule["bbox"])
-
     get_granule(reference_granule["download_url"])
     get_granule(secondary_granule["download_url"])
 
     run_topsApp(reference_granule, secondary_granule, dem_filename)
-
     generate_output_files(reference_granule["acquisition_date"], secondary_granule["acquisition_date"])
