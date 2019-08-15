@@ -191,10 +191,10 @@ def get_granule(granule):
 
 
 def validate_granules(reference_granule, secondary_granule):
-    if reference_granule["download_url"]:
+    if reference_granule:
         print("ERROR: Either reference granule doesn't exist or it is not a SLC product")
         exit(1)
-    if secondary_granule["download_url"]:
+    if secondary_granule:
         print("ERROR: Either secondary granule doesn't exist or it is not a SLC product")
         exit(1)
 
