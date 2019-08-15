@@ -191,12 +191,12 @@ def get_granule(granule):
     unzip(granule_zip)
 
 
-def validate_granules(reference_granule, secondary_granule):
+def validate_granules(reference_granule, secondary_granule, granule_names):
     if not reference_granule:
-        print("ERROR: Either reference granule doesn't exist or it is not a SLC product")
+        print(f"ERROR: Either reference granule {granule_names[0]} doesn't exist or it is not a SLC product")
         exit(1)
     if not secondary_granule:
-        print("ERROR: Either secondary granule doesn't exist or it is not a SLC product")
+        print(f"ERROR: Either secondary granule {granule_names[1]} doesn't exist or it is not a SLC product")
         exit(1)
     if not reference_granule["polygon"].intersects(secondary_granule["polygon"]):
         print("ERROR: The reference granule and the secondary granule do not overlap.")
@@ -249,7 +249,7 @@ if __name__ == "__main__":
 
     reference_granule = get_metadata(args.reference_granule)
     secondary_granule = get_metadata(args.secondary_granule)
-    validate_granules(reference_granule, secondary_granule)
+    validate_granules(reference_granule, secondary_granule,[args.reference_granule,args.secondary_granule])
 
     dem_filename = get_dem(args.dem, reference_granule["bbox"])
     get_granule(reference_granule["download_url"])
