@@ -147,7 +147,7 @@ def download_file(url):
     return local_filename
 
 
-def get_granule_metadata(granule):
+def get_cmr_metadata(granule):
     params = {
         "readable_granule_name": granule,
         "provider": "ASF",
@@ -166,6 +166,7 @@ def get_granule_metadata(granule):
         "acquisition_date": granule[17:25],
         "bbox": get_bounding_box(polygon),
         "directory": f"{granule}.SAFE",
+        "polygon": polygon,
     }
 
     for product in cmr_data["feed"]["entry"][0]["links"]:
@@ -175,29 +176,47 @@ def get_granule_metadata(granule):
     return granule_metadata
 
 
-def get_granule(granule):
-    print(f"\nPreparing {granule}")
-
-    granule_metadata = get_granule_metadata(granule)
-    granule_zip = download_file(granule_metadata["download_url"])
-    unzip(granule_zip)
-
-    granule_metadata["orbit_file"] = get_orbit_file(granule)
+def get_metadata(granule):
+    print(f"\nChecking {granule}")
+    granule_metadata = get_cmr_metadata(granule)
+    if granule_metadata:
+        granule_metadata["orbit_file"] = get_orbit_file(granule)
 
     return granule_metadata
 
 
-def get_dem(bbox):
-    print("\nPreparing digital elevation model")
-    dem_filename = "dem.envi"
-    xml_filename = f"{dem_filename}.xml"
-    get_ISCE_dem(bbox["lon_min"], bbox["lat_min"], bbox["lon_max"], bbox["lat_max"], dem_filename, xml_filename)
-    os.unlink("temp.vrt")
-    os.unlink("temp_dem.tif")
-    if os.path.exists("temp_dem_wgs84.tif"):
-        os.unlink("temp_dem_wgs84.tif")
-    rmtree("DEM")
-    return dem_filename
+def get_granule(granule):
+    print(f"\nDownloading {granule}")
+    granule_zip = download_file(granule)
+    unzip(granule_zip)
+
+
+def validate_granules(reference_granule, secondary_granule, granule_names):
+    if not reference_granule:
+        print(f"\nERROR: Either reference granule {granule_names[0]} doesn't exist or it is not a SLC product")
+        exit(1)
+    if not secondary_granule:
+        print(f"\nERROR: Either secondary granule {granule_names[1]} doesn't exist or it is not a SLC product")
+        exit(1)
+    if not reference_granule["polygon"].intersects(secondary_granule["polygon"]):
+        print("\nERROR: The reference granule and the secondary granule do not overlap.")
+        exit(1)
+
+
+def get_dem(dem, bbox):
+    if dem == "ASF":
+        print("\nPreparing digital elevation model")
+        dem_filename = "dem.envi"
+        xml_filename = f"{dem_filename}.xml"
+        get_ISCE_dem(bbox["lon_min"], bbox["lat_min"], bbox["lon_max"], bbox["lat_max"], dem_filename, xml_filename)
+        os.unlink("temp.vrt")
+        os.unlink("temp_dem.tif")
+        if os.path.exists("temp_dem_wgs84.tif"):
+            os.unlink("temp_dem_wgs84.tif")
+        rmtree("DEM")
+        return dem_filename
+    else:
+        return None
 
 
 def write_netrc_file(username, password):
@@ -214,29 +233,27 @@ def get_args():
     parser.add_argument("--password", "-p", type=str, help="Earthdata Login password.")
     parser.add_argument("--dem", "-d", type=str, help="Digital Elevation Model. ASF automatically selects the best geoid-corrected NED/SRTM DEM.  SRTM uses ISCE's default settings.", choices=["ASF", "SRTM"], default="ASF")
     args = parser.parse_args()
-    
+
     if not args.username:
         args.username = input("\nEarthdata Login username: ")
 
     if not args.password:
         args.password = getpass("\nEarthdata Login password: ")
-        
+
     return args
 
 
 if __name__ == "__main__":
-
     args = get_args()
-
     write_netrc_file(args.username, args.password)
 
-    reference_granule = get_granule(args.reference_granule)
-    secondary_granule = get_granule(args.secondary_granule)
-    if args.dem == "ASF":
-        dem_filename = get_dem(reference_granule["bbox"])
-    else:
-        dem_filename = None
+    reference_granule = get_metadata(args.reference_granule)
+    secondary_granule = get_metadata(args.secondary_granule)
+    validate_granules(reference_granule, secondary_granule,[args.reference_granule,args.secondary_granule])
+
+    dem_filename = get_dem(args.dem, reference_granule["bbox"])
+    get_granule(reference_granule["download_url"])
+    get_granule(secondary_granule["download_url"])
 
     run_topsApp(reference_granule, secondary_granule, dem_filename)
-
     generate_output_files(reference_granule["acquisition_date"], secondary_granule["acquisition_date"])
