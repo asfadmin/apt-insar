@@ -191,25 +191,28 @@ def get_granule(granule):
 
 
 def validate_granules(reference_granule, secondary_granule):
-    if reference_granule:
+    if not reference_granule:
         print("ERROR: Either reference granule doesn't exist or it is not a SLC product")
         exit(1)
-    if secondary_granule:
+    if not secondary_granule:
         print("ERROR: Either secondary granule doesn't exist or it is not a SLC product")
         exit(1)
 
 
-def get_dem(bbox):
-    print("\nPreparing digital elevation model")
-    dem_filename = "dem.envi"
-    xml_filename = f"{dem_filename}.xml"
-    get_ISCE_dem(bbox["lon_min"], bbox["lat_min"], bbox["lon_max"], bbox["lat_max"], dem_filename, xml_filename)
-    os.unlink("temp.vrt")
-    os.unlink("temp_dem.tif")
-    if os.path.exists("temp_dem_wgs84.tif"):
-        os.unlink("temp_dem_wgs84.tif")
-    rmtree("DEM")
-    return dem_filename
+def get_dem(dem, bbox):
+    if dem == "ASF":
+        print("\nPreparing digital elevation model")
+        dem_filename = "dem.envi"
+        xml_filename = f"{dem_filename}.xml"
+        get_ISCE_dem(bbox["lon_min"], bbox["lat_min"], bbox["lon_max"], bbox["lat_max"], dem_filename, xml_filename)
+        os.unlink("temp.vrt")
+        os.unlink("temp_dem.tif")
+        if os.path.exists("temp_dem_wgs84.tif"):
+            os.unlink("temp_dem_wgs84.tif")
+        rmtree("DEM")
+        return dem_filename
+    else:
+        return None
 
 
 def write_netrc_file(username, password):
@@ -247,10 +250,7 @@ if __name__ == "__main__":
 
     validate_granules(reference_granule, secondary_granule)
 
-    if args.dem == "ASF":
-        dem_filename = get_dem(reference_granule["bbox"])
-    else:
-        dem_filename = None
+    dem_filename = get_dem(args.dem, reference_granule["bbox"])
 
     get_granule(reference_granule["download_url"])
     get_granule(secondary_granule["download_url"])
