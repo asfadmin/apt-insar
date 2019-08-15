@@ -178,7 +178,8 @@ def get_granule_metadata(granule):
 def get_metadata(granule):
     print(f"\nPreparing {granule}")
     granule_metadata = get_granule_metadata(granule)
-    granule_metadata["orbit_file"] = get_orbit_file(granule)
+    if granule_metadata:
+        granule_metadata["orbit_file"] = get_orbit_file(granule)
 
     return granule_metadata
 
