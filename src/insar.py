@@ -147,7 +147,7 @@ def download_file(url):
     return local_filename
 
 
-def get_granule_metadata(granule):
+def get_cmr_metadata(granule):
     params = {
         "readable_granule_name": granule,
         "provider": "ASF",
@@ -177,8 +177,8 @@ def get_granule_metadata(granule):
 
 
 def get_metadata(granule):
-    print(f"\nPreparing {granule}")
-    granule_metadata = get_granule_metadata(granule)
+    print(f"\nChecking {granule}")
+    granule_metadata = get_cmr_metadata(granule)
     if granule_metadata:
         granule_metadata["orbit_file"] = get_orbit_file(granule)
 
