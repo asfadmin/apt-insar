@@ -166,6 +166,7 @@ def get_granule_metadata(granule):
         "acquisition_date": granule[17:25],
         "bbox": get_bounding_box(polygon),
         "directory": f"{granule}.SAFE",
+        "polygon": polygon,
     }
 
     for product in cmr_data["feed"]["entry"][0]["links"]:
@@ -196,6 +197,9 @@ def validate_granules(reference_granule, secondary_granule):
         exit(1)
     if not secondary_granule:
         print("ERROR: Either secondary granule doesn't exist or it is not a SLC product")
+        exit(1)
+    if not reference_granule['polygon'].intersects(secondary_granule['polygon']):
+        print("ERROR: The reference granule and the secondary granule do not overlap.")
         exit(1)
 
 
