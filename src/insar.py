@@ -22,7 +22,7 @@ COLLECTION_IDS = [
 USER_AGENT = "python3 asfdaac/apt-insar"
 
 
-def write_output_xml(reference_granule, secondary_granule, product_type, name, dem_name=None):
+def write_output_xml(reference_granule, secondary_granule, product_type, output_file, dem_name=None):
     template = get_xml_template("arcgis_template.xml")
     data = {
         "reference_granule": reference_granule["reference_granule"],
@@ -31,7 +31,7 @@ def write_output_xml(reference_granule, secondary_granule, product_type, name, d
         "product_type": product_type,
     }
     rendered = template.render(data)
-    with open("/output/" + name + "-" + product_type + ".tif.xml", "w") as f:
+    with open(output_file, "w") as f:
         f.write(rendered)
 
 
@@ -75,11 +75,11 @@ def generate_output_files(reference_granule, secondary_granule, input_folder="me
     print("\nGenerating output files")
     name = f"S1-INSAR-{reference_granule['acquisition_date']}-{secondary_granule['acquisition_date']}"
     create_geotiff(f"{input_folder}/phsig.cor.geo", f"{output_folder}/{name}-COR.tif")
-    write_output_xml(reference_granule, secondary_granule, "COR", name)
+    write_output_xml(reference_granule, secondary_granule, "COR", f"{output_folder}/{name}-COR.tif")
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-AMP.tif", input_band=1)
-    write_output_xml(reference_granule, secondary_granule, "AMP", name)
+    write_output_xml(reference_granule, secondary_granule, "AMP", f"{output_folder}/{name}-AMP.tif")
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-UNW.tif", input_band=2)
-    write_output_xml(reference_granule, secondary_granule, "UNW", name)
+    write_output_xml(reference_granule, secondary_granule, "UNW", f"{output_folder}/{name}-UNW.tif")
     create_browse(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}.png")
 
 
