@@ -166,6 +166,7 @@ def download_file(url):
     return local_filename
 
 
+
 def get_cmr_metadata(granule, granule_names):
     params = {
         "readable_granule_name": granule,
@@ -205,6 +206,13 @@ def get_metadata(granule, granule_names):
         granule_metadata["orbit_file"] = get_orbit_file(granule)
 
     return granule_metadata
+
+
+def get_granule(granule):
+    print(f"\nDownloading {granule}")
+    granule_zip = download_file(granule)
+    unzip(granule_zip)
+
 
 
 def get_granule(granule):
@@ -269,10 +277,12 @@ if __name__ == "__main__":
     args = get_args()
     write_netrc_file(args.username, args.password)
 
+
     granule_names = [args.reference_granule, args.secondary_granule]
     reference_granule = get_metadata(args.reference_granule, granule_names)
     secondary_granule = get_metadata(args.secondary_granule, granule_names)
     validate_granules(reference_granule, secondary_granule)
+
 
     dem_filename = get_dem(args.dem, reference_granule["bbox"])
     get_granule(reference_granule["download_url"])
@@ -280,3 +290,4 @@ if __name__ == "__main__":
 
     run_topsApp(reference_granule, secondary_granule, dem_filename)
     generate_output_files(reference_granule, secondary_granule)
+
