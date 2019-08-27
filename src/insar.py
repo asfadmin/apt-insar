@@ -23,7 +23,7 @@ USER_AGENT = "python3 asfdaac/apt-insar"
 
 
 def write_output_xml(reference_granule, secondary_granule, product_type, dem_name=None):
-    template = get_xml_template("arcgis_template-" + product_type + " .xml")
+    template = get_xml_template("arcgis_template.xml")
     data = {
         "reference_granule": reference_granule["reference_granule"],
         "secondary_granule": secondary_granule["secondary_granule"],
@@ -31,7 +31,7 @@ def write_output_xml(reference_granule, secondary_granule, product_type, dem_nam
         "product_type": product_type,
     }
     rendered = template.render(data)
-    with open("arcgis.xml", "w") as f:
+    with open("/output/arcgis-" + product_type + ".xml", "w") as f:
         f.write(rendered)
 
 
