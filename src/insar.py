@@ -200,6 +200,7 @@ def get_cmr_metadata(granule, granule_names):
 def get_metadata(granule, granule_names):
     print(f"\nChecking {granule}")
     granule_metadata = get_cmr_metadata(granule, granule_names)
+
     if granule_metadata:
         granule_metadata["orbit_file"] = get_orbit_file(granule)
 
@@ -212,12 +213,12 @@ def get_granule(granule):
     unzip(granule_zip)
 
 
-def validate_granules(reference_granule, secondary_granule):
+def validate_granules(reference_granule, secondary_granule, granule_names):
     if not reference_granule:
-        print(f"\nERROR: Either reference granule {reference_granule['reference_granule']} doesn't exist or it is not a SLC product")
+        print(f"\nERROR: Either reference granule {granule_names[0]} doesn't exist or it is not a SLC product")
         exit(1)
     if not secondary_granule:
-        print(f"\nERROR: Either secondary granule {secondary_granule['secondary_granule']} doesn't exist or it is not a SLC product")
+        print(f"\nERROR: Either secondary granule {granule_names[1]} doesn't exist or it is not a SLC product")
         exit(1)
     if not reference_granule["polygon"].intersects(secondary_granule["polygon"]):
         print("\nERROR: The reference granule and the secondary granule do not overlap.")
