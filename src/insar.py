@@ -22,7 +22,7 @@ COLLECTION_IDS = [
 USER_AGENT = "python3 asfdaac/apt-insar"
 
 
-def write_output_xml(reference_granule, secondary_granule, product_type, dem_name=None):
+def write_output_xml(reference_granule, secondary_granule, product_type, name, dem_name=None):
     template = get_xml_template("arcgis_template.xml")
     data = {
         "reference_granule": reference_granule["reference_granule"],
@@ -31,7 +31,7 @@ def write_output_xml(reference_granule, secondary_granule, product_type, dem_nam
         "product_type": product_type,
     }
     rendered = template.render(data)
-    with open("/output/" + product_type + ".tif.xml", "w") as f:
+    with open("/output/" + name + "-" + product_type + ".tif.xml", "w") as f:
         f.write(rendered)
 
 
@@ -73,15 +73,13 @@ def create_geotiff(input_file, output_file, input_band=1):
 
 def generate_output_files(reference_granule, secondary_granule, input_folder="merged", output_folder="/output"):
     print("\nGenerating output files")
-    start_date = reference_granule["acquisition_date"]
-    end_date = secondary_granule["acquisition_date"]
-    name = f"S1-INSAR-{start_date}-{end_date}"
+    name = f"S1-INSAR-{reference_granule['acquisition_date']}-{secondary_granule['acquisition_date']}"
     create_geotiff(f"{input_folder}/phsig.cor.geo", f"{output_folder}/{name}-COR.tif")
-    write_output_xml(reference_granule, secondary_granule, f"{name}-COR")
+    write_output_xml(reference_granule, secondary_granule, "COR", name)
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-AMP.tif", input_band=1)
-    write_output_xml(reference_granule, secondary_granule, f"{name}-AMP")
+    write_output_xml(reference_granule, secondary_granule, "AMP", name)
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-UNW.tif", input_band=2)
-    write_output_xml(reference_granule, secondary_granule, f"{name}-UNW")
+    write_output_xml(reference_granule, secondary_granule, "UNW", name)
     create_browse(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}.png")
 
 
