@@ -22,13 +22,14 @@ COLLECTION_IDS = [
 USER_AGENT = "python3 asfdaac/apt-insar"
 
 
-def write_output_xml(reference_granule, secondary_granule, product_type, output_file, dem_name=None):
+def write_output_xml(reference_granule, secondary_granule, product_type, output_file, dem_name):
     template = get_xml_template("arcgis_template.xml")
     data = {
         "reference_granule": reference_granule["name"],
         "secondary_granule": secondary_granule["name"],
         "now": datetime.datetime.now(),
         "product_type": product_type,
+        "dem_name": dem_name,
     }
     rendered = template.render(data)
     with open(output_file, "w") as f:
@@ -71,15 +72,15 @@ def create_geotiff(input_file, output_file, input_band=1):
     os.unlink(temp_file)
 
 
-def generate_output_files(reference_granule, secondary_granule, input_folder="merged", output_folder="/output"):
+def generate_output_files(reference_granule, secondary_granule, dem_name, input_folder="merged", output_folder="/output"):
     print("\nGenerating output files")
     name = f"S1-INSAR-{reference_granule['acquisition_date']}-{secondary_granule['acquisition_date']}"
     create_geotiff(f"{input_folder}/phsig.cor.geo", f"{output_folder}/{name}-COR.tif")
-    write_output_xml(reference_granule, secondary_granule, "COR", f"{output_folder}/{name}-COR.tif.xml")
+    write_output_xml(reference_granule, secondary_granule, "COR", f"{output_folder}/{name}-COR.tif.xml", dem_name)
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-AMP.tif", input_band=1)
-    write_output_xml(reference_granule, secondary_granule, "AMP", f"{output_folder}/{name}-AMP.tif.xml")
+    write_output_xml(reference_granule, secondary_granule, "AMP", f"{output_folder}/{name}-AMP.tif.xml", dem_name)
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-UNW.tif", input_band=2)
-    write_output_xml(reference_granule, secondary_granule, "UNW", f"{output_folder}/{name}-UNW.tif.xml")
+    write_output_xml(reference_granule, secondary_granule, "UNW", f"{output_folder}/{name}-UNW.tif.xml", dem_name)
     create_browse(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}.png")
 
 
@@ -226,15 +227,15 @@ def get_dem(dem, bbox):
         print("\nPreparing digital elevation model")
         dem_filename = "dem.envi"
         xml_filename = f"{dem_filename}.xml"
-        get_ISCE_dem(bbox["lon_min"], bbox["lat_min"], bbox["lon_max"], bbox["lat_max"], dem_filename, xml_filename)
+        dem_name = get_ISCE_dem(bbox["lon_min"], bbox["lat_min"], bbox["lon_max"], bbox["lat_max"], dem_filename, xml_filename)
         os.unlink("temp.vrt")
         os.unlink("temp_dem.tif")
         if os.path.exists("temp_dem_wgs84.tif"):
             os.unlink("temp_dem_wgs84.tif")
         rmtree("DEM")
-        return dem_filename
+        return dem_filename, dem_name
     else:
-        return None
+        return None, "SRTMGL1"
 
 
 def write_netrc_file(username, password):
@@ -269,9 +270,9 @@ if __name__ == "__main__":
     secondary_granule = get_metadata(args.secondary_granule)
     validate_granules(reference_granule, secondary_granule)
 
-    dem_filename = get_dem(args.dem, reference_granule["bbox"])
+    dem_filename, dem_name = get_dem(args.dem, reference_granule["bbox"])
     get_granule(reference_granule["download_url"])
     get_granule(secondary_granule["download_url"])
 
     run_topsApp(reference_granule, secondary_granule, dem_filename)
-    generate_output_files(reference_granule, secondary_granule)
+    generate_output_files(reference_granule, secondary_granule, dem_name)
