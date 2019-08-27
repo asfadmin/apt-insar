@@ -31,7 +31,7 @@ def write_output_xml(reference_granule, secondary_granule, product_type, dem_nam
         "product_type": product_type,
     }
     rendered = template.render(data)
-    with open("/output/arcgis-" + product_type + ".xml", "w") as f:
+    with open("/output/" + product_type + ".tif.xml", "w") as f:
         f.write(rendered)
 
 
@@ -77,11 +77,11 @@ def generate_output_files(reference_granule, secondary_granule, input_folder="me
     end_date = secondary_granule["acquisition_date"]
     name = f"S1-INSAR-{start_date}-{end_date}"
     create_geotiff(f"{input_folder}/phsig.cor.geo", f"{output_folder}/{name}-COR.tif")
-    write_output_xml(reference_granule, secondary_granule, "COR")
+    write_output_xml(reference_granule, secondary_granule, f"{name}-COR")
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-AMP.tif", input_band=1)
-    write_output_xml(reference_granule, secondary_granule, "AMP")
+    write_output_xml(reference_granule, secondary_granule, f"{name}-AMP")
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-UNW.tif", input_band=2)
-    write_output_xml(reference_granule, secondary_granule, "UNW")
+    write_output_xml(reference_granule, secondary_granule, f"{name}-UNW")
     create_browse(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}.png")
 
 
