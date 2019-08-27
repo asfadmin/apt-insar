@@ -76,7 +76,6 @@ def generate_output_files(reference_granule, secondary_granule, input_folder="me
     start_date = reference_granule["acquisition_date"]
     end_date = secondary_granule["acquisition_date"]
     name = f"S1-INSAR-{start_date}-{end_date}"
-    secondary_granule["acquisition_date"]
     create_geotiff(f"{input_folder}/phsig.cor.geo", f"{output_folder}/{name}-COR.tif")
     write_output_xml(reference_granule, secondary_granule, "COR")
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-AMP.tif", input_band=1)
