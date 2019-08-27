@@ -16,6 +16,7 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
    - Amplitude image
    - Coherence image
    - Unwrapped phase image
+- ArcGIS compatible ISO 19115 metadata for each data product
 - Browse image of wrapped phase and amplitude in PNG format
 
 ## System Requirements
@@ -153,8 +154,11 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 1. Upon completion, InSAR products will appear in the directory where **apt-insar.sh** was executed.
    ```
    S1-INSAR-20190716-20190704-AMP.tif
+   S1-INSAR-20190716-20190704-AMP.tif.xml
    S1-INSAR-20190716-20190704-COR.tif
+   S1-INSAR-20190716-20190704-COR.tif.xml
    S1-INSAR-20190716-20190704-UNW.tif
+   S1-INSAR-20190716-20190704-UNW.tif.xml
    S1-INSAR-20190716-20190704.png
    ```
 ## Additional Options
