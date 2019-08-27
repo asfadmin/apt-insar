@@ -166,8 +166,7 @@ def download_file(url):
     return local_filename
 
 
-
-def get_cmr_metadata(granule, granule_names):
+def get_cmr_metadata(granule):
     params = {
         "readable_granule_name": granule,
         "provider": "ASF",
@@ -187,8 +186,7 @@ def get_cmr_metadata(granule, granule_names):
         "bbox": get_bounding_box(polygon),
         "directory": f"{granule}.SAFE",
         "polygon": polygon,
-        "reference_granule": granule_names[0],
-        "secondary_granule": granule_names[1],
+        "name": granule,
     }
 
     for product in cmr_data["feed"]["entry"][0]["links"]:
@@ -198,9 +196,9 @@ def get_cmr_metadata(granule, granule_names):
     return granule_metadata
 
 
-def get_metadata(granule, granule_names):
+def get_metadata(granule):
     print(f"\nChecking {granule}")
-    granule_metadata = get_cmr_metadata(granule, granule_names)
+    granule_metadata = get_cmr_metadata(granule)
 
     if granule_metadata:
         granule_metadata["orbit_file"] = get_orbit_file(granule)
@@ -209,24 +207,16 @@ def get_metadata(granule, granule_names):
 
 
 def get_granule(granule):
-    print(f"\nDownloading {granule}")
     granule_zip = download_file(granule)
     unzip(granule_zip)
 
 
-
-def get_granule(granule):
-    print(f"\nDownloading {granule}")
-    granule_zip = download_file(granule)
-    unzip(granule_zip)
-
-
-def validate_granules(reference_granule, secondary_granule, granule_names):
+def validate_granules(reference_granule, secondary_granule):
     if not reference_granule:
-        print(f"\nERROR: Either reference granule {granule_names[0]} doesn't exist or it is not a SLC product")
+        print(f"\nERROR: Either reference granule {reference_granule['name']} doesn't exist or it is not a SLC product")
         exit(1)
     if not secondary_granule:
-        print(f"\nERROR: Either secondary granule {granule_names[1]} doesn't exist or it is not a SLC product")
+        print(f"\nERROR: Either secondary granule {secondary_granule['name']} doesn't exist or it is not a SLC product")
         exit(1)
     if not reference_granule["polygon"].intersects(secondary_granule["polygon"]):
         print("\nERROR: The reference granule and the secondary granule do not overlap.")
@@ -277,12 +267,9 @@ if __name__ == "__main__":
     args = get_args()
     write_netrc_file(args.username, args.password)
 
-
-    granule_names = [args.reference_granule, args.secondary_granule]
-    reference_granule = get_metadata(args.reference_granule, granule_names)
-    secondary_granule = get_metadata(args.secondary_granule, granule_names)
+    reference_granule = get_metadata(args.reference_granule)
+    secondary_granule = get_metadata(args.secondary_granule)
     validate_granules(reference_granule, secondary_granule)
-
 
     dem_filename = get_dem(args.dem, reference_granule["bbox"])
     get_granule(reference_granule["download_url"])
@@ -290,5 +277,3 @@ if __name__ == "__main__":
 
     run_topsApp(reference_granule, secondary_granule, dem_filename)
     generate_output_files(reference_granule, secondary_granule)
-
-
