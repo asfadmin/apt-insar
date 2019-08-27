@@ -76,11 +76,11 @@ def generate_output_files(reference_granule, secondary_granule, dem_name, input_
     print("\nGenerating output files")
     name = f"S1-INSAR-{reference_granule['acquisition_date']}-{secondary_granule['acquisition_date']}"
     create_geotiff(f"{input_folder}/phsig.cor.geo", f"{output_folder}/{name}-COR.tif")
-    write_output_xml(reference_granule, secondary_granule, "COR", f"{output_folder}/{name}-COR.tif", dem_name)
+    write_output_xml(reference_granule, secondary_granule, "COR", f"{output_folder}/{name}-COR.tif.xml", dem_name)
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-AMP.tif", input_band=1)
-    write_output_xml(reference_granule, secondary_granule, "AMP", f"{output_folder}/{name}-AMP.tif", dem_name)
+    write_output_xml(reference_granule, secondary_granule, "AMP", f"{output_folder}/{name}-AMP.tif.xml", dem_name)
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-UNW.tif", input_band=2)
-    write_output_xml(reference_granule, secondary_granule, "UNW", f"{output_folder}/{name}-UNW.tif", dem_name)
+    write_output_xml(reference_granule, secondary_granule, "UNW", f"{output_folder}/{name}-UNW.tif.xml", dem_name)
     create_browse(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}.png")
 
 
