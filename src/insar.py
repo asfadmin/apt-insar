@@ -149,7 +149,7 @@ def unzip(zip_file):
 
 
 def download_file(url):
-    print(f"Downloading {url}")
+    print(f"\nDownloading {url}")
     local_filename = url.split("/")[-1]
     headers = {"User-Agent": USER_AGENT}
     with requests.get(url, headers=headers, stream=True) as r:
