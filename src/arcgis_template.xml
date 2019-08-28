@@ -46,10 +46,6 @@
     <ArcGISFormat>1.0</ArcGISFormat>
     <ArcGISstyle>North American Profile of ISO19115 2003</ArcGISstyle>
     <SyncOnce>TRUE</SyncOnce>
-    <scaleRange>
-      <minScale>TODO</minScale>
-      <maxScale>TODO</maxScale>
-    </scaleRange>
     <DataProperties>
       <itemProps>
         <imsContentType export="False">002</imsContentType>
@@ -148,7 +144,6 @@ Additional information about Sentinel-1 data, imagery, tools and applications is
   <mdHrLv>
    <ScopeCd value="005" />
   </mdHrLv>
-  <mdFileID>TODO</mdFileID>
   <mdLang>
     <languageCode value="eng" />
     <countryCode value="US" />
@@ -176,9 +171,6 @@ Additional information about Sentinel-1 data, imagery, tools and applications is
         <ScopeCd value="005" />
       </scpLvl>
     </dqScope>
-    <dataLineage>
-       <statement>TODO</statement>
-    </dataLineage>
   </dqInfo>
   <mdMaint>
     <maintFreq>
