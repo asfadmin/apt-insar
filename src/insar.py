@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 from zipfile import ZipFile
 from getpass import getpass
 from shutil import rmtree
+import datetime
 
 import requests
 from jinja2 import Template
@@ -19,6 +20,20 @@ COLLECTION_IDS = [
     "C1327985661-ASF",  # SENTINEL-1B_SLC
 ]
 USER_AGENT = "python3 asfdaac/apt-insar"
+
+
+def write_output_xml(reference_granule, secondary_granule, product_type, output_file, dem_name):
+    template = get_xml_template("arcgis_template.xml")
+    data = {
+        "reference_granule": reference_granule["name"],
+        "secondary_granule": secondary_granule["name"],
+        "now": datetime.datetime.now(),
+        "product_type": product_type,
+        "dem_name": dem_name,
+    }
+    rendered = template.render(data)
+    with open(output_file, "w") as f:
+        f.write(rendered)
 
 
 def get_polygon(entry):
@@ -57,12 +72,15 @@ def create_geotiff(input_file, output_file, input_band=1):
     os.unlink(temp_file)
 
 
-def generate_output_files(start_date, end_date, input_folder="merged", output_folder="/output"):
+def generate_output_files(reference_granule, secondary_granule, dem_name, input_folder="merged", output_folder="/output"):
     print("\nGenerating output files")
-    name = f"S1-INSAR-{start_date}-{end_date}"
+    name = f"S1-INSAR-{reference_granule['acquisition_date']}-{secondary_granule['acquisition_date']}"
     create_geotiff(f"{input_folder}/phsig.cor.geo", f"{output_folder}/{name}-COR.tif")
+    write_output_xml(reference_granule, secondary_granule, "COR", f"{output_folder}/{name}-COR.tif.xml", dem_name)
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-AMP.tif", input_band=1)
+    write_output_xml(reference_granule, secondary_granule, "AMP", f"{output_folder}/{name}-AMP.tif.xml", dem_name)
     create_geotiff(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}-UNW.tif", input_band=2)
+    write_output_xml(reference_granule, secondary_granule, "UNW", f"{output_folder}/{name}-UNW.tif.xml", dem_name)
     create_browse(f"{input_folder}/filt_topophase.unw.geo", f"{output_folder}/{name}.png")
 
 
@@ -73,15 +91,15 @@ def system_call(params):
         exit(return_code)
 
 
-def get_xml_template():
-    with open("topsApp_template.xml", "r") as t:
+def get_xml_template(template_name):
+    with open(template_name, "r") as t:
         template_text = t.read()
     template = Template(template_text)
     return template
 
 
 def write_topsApp_xml(reference_granule, secondary_granule, dem_filename=None):
-    template = get_xml_template()
+    template = get_xml_template("topsApp_template.xml")
     rendered = template.render(reference_granule=reference_granule, secondary_granule=secondary_granule, dem_filename=dem_filename)
     with open("topsApp.xml", "w") as f:
         f.write(rendered)
@@ -132,7 +150,7 @@ def unzip(zip_file):
 
 
 def download_file(url):
-    print(f"Downloading {url}")
+    print(f"\nDownloading {url}")
     local_filename = url.split("/")[-1]
     headers = {"User-Agent": USER_AGENT}
     with requests.get(url, headers=headers, stream=True) as r:
@@ -167,6 +185,7 @@ def get_cmr_metadata(granule):
         "bbox": get_bounding_box(polygon),
         "directory": f"{granule}.SAFE",
         "polygon": polygon,
+        "name": granule,
     }
 
     for product in cmr_data["feed"]["entry"][0]["links"]:
@@ -179,6 +198,7 @@ def get_cmr_metadata(granule):
 def get_metadata(granule):
     print(f"\nChecking {granule}")
     granule_metadata = get_cmr_metadata(granule)
+
     if granule_metadata:
         granule_metadata["orbit_file"] = get_orbit_file(granule)
 
@@ -186,17 +206,16 @@ def get_metadata(granule):
 
 
 def get_granule(granule):
-    print(f"\nDownloading {granule}")
     granule_zip = download_file(granule)
     unzip(granule_zip)
 
 
-def validate_granules(reference_granule, secondary_granule, granule_names):
+def validate_granules(reference_granule, secondary_granule):
     if not reference_granule:
-        print(f"\nERROR: Either reference granule {granule_names[0]} doesn't exist or it is not a SLC product")
+        print(f"\nERROR: Either reference granule {reference_granule['name']} doesn't exist or it is not a SLC product")
         exit(1)
     if not secondary_granule:
-        print(f"\nERROR: Either secondary granule {granule_names[1]} doesn't exist or it is not a SLC product")
+        print(f"\nERROR: Either secondary granule {secondary_granule['name']} doesn't exist or it is not a SLC product")
         exit(1)
     if not reference_granule["polygon"].intersects(secondary_granule["polygon"]):
         print("\nERROR: The reference granule and the secondary granule do not overlap.")
@@ -208,15 +227,15 @@ def get_dem(dem, bbox):
         print("\nPreparing digital elevation model")
         dem_filename = "dem.envi"
         xml_filename = f"{dem_filename}.xml"
-        get_ISCE_dem(bbox["lon_min"], bbox["lat_min"], bbox["lon_max"], bbox["lat_max"], dem_filename, xml_filename)
+        dem_name = get_ISCE_dem(bbox["lon_min"], bbox["lat_min"], bbox["lon_max"], bbox["lat_max"], dem_filename, xml_filename)
         os.unlink("temp.vrt")
         os.unlink("temp_dem.tif")
         if os.path.exists("temp_dem_wgs84.tif"):
             os.unlink("temp_dem_wgs84.tif")
         rmtree("DEM")
-        return dem_filename
+        return dem_filename, dem_name
     else:
-        return None
+        return None, "SRTMGL1"
 
 
 def write_netrc_file(username, password):
@@ -249,11 +268,11 @@ if __name__ == "__main__":
 
     reference_granule = get_metadata(args.reference_granule)
     secondary_granule = get_metadata(args.secondary_granule)
-    validate_granules(reference_granule, secondary_granule,[args.reference_granule,args.secondary_granule])
+    validate_granules(reference_granule, secondary_granule)
 
-    dem_filename = get_dem(args.dem, reference_granule["bbox"])
+    dem_filename, dem_name = get_dem(args.dem, reference_granule["bbox"])
     get_granule(reference_granule["download_url"])
     get_granule(secondary_granule["download_url"])
 
     run_topsApp(reference_granule, secondary_granule, dem_filename)
-    generate_output_files(reference_granule["acquisition_date"], secondary_granule["acquisition_date"])
+    generate_output_files(reference_granule, secondary_granule, dem_name)

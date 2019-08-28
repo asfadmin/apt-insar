@@ -2,7 +2,7 @@
 
 ## Background
 
-The Alaska Satellite Facility (ASF) has developed an advanced product toolbox (APT) capable of conducting Interferometric SAR Processing (InSAR) leveraging the ISCE Processor named apt-insar. The toolbox provides automated fetching of data from ASF's datapool (https://search.asf.alaska.edu), Digital Elevation Map (DEM) selection and stitching, and bundles NASA's Jet Propultion Labritory (JPL) ISCE processor to produce interferogram products from start to finish. This allows users to begin with a pair of granule names and in one command produce an analysis ready interferogram.
+The Alaska Satellite Facility (ASF) has developed an advanced product toolbox (APT) capable of conducting Interferometric SAR Processing (InSAR) leveraging the ISCE Processor named apt-insar. The toolbox provides automated fetching of data from ASF's datapool (https://search.asf.alaska.edu), Digital Elevation Map (DEM) selection and stitching, and bundles NASA's Jet Propulsion Laboratory (JPL) ISCE processor to produce interferogram products from start to finish. This allows users to begin with a pair of granule names and in one command produce an analysis ready interferogram.
 
 Interferograms measure millimeter-scale changes in deformation over spans of days to years. Applications include:
 * Measuring tectonic deformation due to earthquakes
@@ -16,6 +16,7 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
    - Amplitude image
    - Coherence image
    - Unwrapped phase image
+- ArcGIS compatible ISO 19115 metadata for each data product
 - Browse image of wrapped phase and amplitude in PNG format
 
 ## System Requirements
@@ -153,8 +154,11 @@ Interferograms measure millimeter-scale changes in deformation over spans of day
 1. Upon completion, InSAR products will appear in the directory where **apt-insar.sh** was executed.
    ```
    S1-INSAR-20190716-20190704-AMP.tif
+   S1-INSAR-20190716-20190704-AMP.tif.xml
    S1-INSAR-20190716-20190704-COR.tif
+   S1-INSAR-20190716-20190704-COR.tif.xml
    S1-INSAR-20190716-20190704-UNW.tif
+   S1-INSAR-20190716-20190704-UNW.tif.xml
    S1-INSAR-20190716-20190704.png
    ```
 ## Additional Options
