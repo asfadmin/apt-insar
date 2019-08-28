@@ -61,7 +61,7 @@
   </Esri>
   <dataIdInfo>
     <idPurp>This file is the {{ product["value"] }} component of a Geocoded Unwrapped Interferogram of SLC SAR data from the Sentinel-1 mission, processed using the InSAR Scientific Computing Environment (ISCE). Cell values indicate {{ product["value"] }} {{ product["units"] }}, and pixel spacing is 30 meters.</idPurp>
-    <idAbs>This Geocoded Unwrapped Interferogram product is derived from a pair of Single Look Complex (SLC) granules of  Synthetic Aperture Radar data from the Copernicus Sentinel-1 mission (European Space Agency), generated using the InSAR Scientific Computing Environment (ISCE) v2.3.1. It is projected to WGS 1984 latitude/longitude coordinates, and is corrected for terrain using a digital elevation model (DEM). The DEM used for this product is {{ dem_name }} (about {{ dem_resolution }} resolution).
+    <idAbs>This Geocoded Unwrapped Interferogram product is derived from a pair of Single Look Complex (SLC) granules of Synthetic Aperture Radar data from the Copernicus Sentinel-1 mission (European Space Agency), generated using the InSAR Scientific Computing Environment (ISCE) v2.3.1. It is projected to WGS 1984 latitude/longitude coordinates, and is corrected for terrain using a digital elevation model (DEM). The DEM used for this product is {{ dem_name }} (about {{ dem_resolution }} resolution).
 
 Processing Date/Time: {{ date }} {{ time }} UTC
 
