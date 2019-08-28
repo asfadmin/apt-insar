@@ -13,7 +13,7 @@ from shapely.geometry import Polygon
 
 
 CHUNK_SIZE = 5242880
-CMR_URL = "https://cmr.earthdata.nasa.gov/search/granules.json"
+CMR_URL = "https://cmr.earthdata.nasa.gov/search/granules.umm_json"
 QC_URL = "https://qc.sentinel1.eo.esa.int/api/v1/"
 COLLECTION_IDS = [
     "C1214470488-ASF",  # SENTINEL-1A_SLC
@@ -37,9 +37,9 @@ def write_output_xml(reference_granule, secondary_granule, product_type, output_
 
 
 def get_polygon(entry):
-    floats = [float(ii) for ii in entry["polygons"][0][0].split()]
-    points = zip(floats[::2], floats[1::2])
-    return Polygon(points)
+    points = entry["SpatialExtent"]["HorizontalSpatialDomain"]["Geometry"]["GPolygons"][0]["Boundary"]["Points"]
+    poly = [[point["Latitude"], point["Longitude"]] for point in points]
+    return Polygon(poly)
 
 
 def get_bounding_box(polygon):
@@ -165,6 +165,20 @@ def download_file(url):
     return local_filename
 
 
+def get_attribute(entry, attribute_name):
+    for attribute in entry["AdditionalAttributes"]:
+        if attribute["Name"] == attribute_name:
+            return attribute["Values"][0]
+    return None
+
+
+def get_download_url(entry):
+    for url in entry["RelatedUrls"]:
+        if url["Type"] == "GET DATA":
+            return url["URL"]
+    return None
+
+
 def get_cmr_metadata(granule):
     params = {
         "readable_granule_name": granule,
@@ -175,10 +189,10 @@ def get_cmr_metadata(granule):
     response.raise_for_status()
     cmr_data = response.json()
 
-    if not cmr_data["feed"]["entry"]:
+    if not cmr_data["items"]:
         return None
 
-    entry = cmr_data["feed"]["entry"][0]
+    entry = cmr_data["items"][0]["umm"]
     polygon = get_polygon(entry)
     granule_metadata = {
         "acquisition_date": granule[17:25],
@@ -186,11 +200,9 @@ def get_cmr_metadata(granule):
         "directory": f"{granule}.SAFE",
         "polygon": polygon,
         "name": granule,
+        "path_number": get_attribute(entry, "PATH_NUMBER"),
+        "download_url": get_download_url(entry),
     }
-
-    for product in cmr_data["feed"]["entry"][0]["links"]:
-        if "data" in product["rel"]:
-            granule_metadata["download_url"] = product["href"]
 
     return granule_metadata
 
@@ -212,13 +224,16 @@ def get_granule(granule):
 
 def validate_granules(reference_granule, secondary_granule):
     if not reference_granule:
-        print(f"\nERROR: Either reference granule {reference_granule['name']} doesn't exist or it is not a SLC product")
+        print(f"\nERROR: Either reference granule does not exist or it is not a SLC product")
         exit(1)
     if not secondary_granule:
-        print(f"\nERROR: Either secondary granule {secondary_granule['name']} doesn't exist or it is not a SLC product")
+        print(f"\nERROR: Either secondary granule does not exist or it is not a SLC product")
         exit(1)
     if not reference_granule["polygon"].intersects(secondary_granule["polygon"]):
         print("\nERROR: The reference granule and the secondary granule do not overlap.")
+        exit(1)
+    if reference_granule["path_number"] != secondary_granule["path_number"]:
+        print("\nERROR: The reference granule and the secondary granule are not on the same track.")
         exit(1)
 
 
